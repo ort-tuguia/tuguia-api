@@ -1,4 +1,4 @@
-package edu.ort.tuguia.controller
+package edu.ort.tuguia.controllers
 
 import org.junit.jupiter.api.Test
 import org.springframework.beans.factory.annotation.Autowired
