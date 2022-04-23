@@ -21,5 +21,4 @@ git clone git@github.com:ort-tuguia/tuguia-api.git && cd tuguia-api
 
 ## Developed By
 
-- TODO
 
