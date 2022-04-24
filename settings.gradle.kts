@@ -1,1 +1,1 @@
-rootProject.name = "tuguia-api"
+rootProject.name = "tuguia"

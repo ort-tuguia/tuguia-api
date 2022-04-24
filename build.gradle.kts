@@ -10,7 +10,7 @@ plugins {
 }
 
 group = "edu.ort"
-version = "0.0.1-SNAPSHOT"
+version = "1.0.0"
 java.sourceCompatibility = JavaVersion.VERSION_11
 
 repositories {
@@ -50,11 +50,5 @@ tasks.withType<JacocoReport> {
             .map { fileTree(it).exclude("**/ApplicationKt.class") }
             .let { files(it) }
         classDirectories.setFrom(coverageParticipants)
-    }
-}
-
-tasks.withType<Jar> {
-    manifest {
-        attributes["Main-Class"] = "edu.ort.tuguia.ApplicationKt"
     }
 }
