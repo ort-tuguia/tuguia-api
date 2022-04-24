@@ -35,15 +35,6 @@ tasks.withType<KotlinCompile> {
     }
 }
 
-tasks.withType<Jar>() {
-    manifest {
-        attributes["Main-Class"] = "edu.ort.tuguia.ApplicationKt"
-    }
-    configurations["compileClasspath"].forEach { file: File ->
-        from(zipTree(file.absoluteFile))
-    }
-}
-
 tasks.withType<Test> {
     useJUnitPlatform()
 }
