@@ -1,1 +1,0 @@
-web: java -jar build/libs/tuguia-api.jar --server.port=$PORT
