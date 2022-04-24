@@ -52,3 +52,9 @@ tasks.withType<JacocoReport> {
         classDirectories.setFrom(coverageParticipants)
     }
 }
+
+tasks.withType<Jar> {
+    manifest {
+        attributes["Main-Class"] = "edu.ort.tuguia.ApplicationKt"
+    }
+}
