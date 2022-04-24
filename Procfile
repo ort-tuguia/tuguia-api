@@ -1,1 +1,1 @@
-web: java -jar build/libs/ort-tuguia-api.jar --server.port=$PORT
+web: java -jar build/libs/tuguia-api.jar --server.port=$PORT
