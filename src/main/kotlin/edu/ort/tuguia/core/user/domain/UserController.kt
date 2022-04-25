@@ -10,7 +10,6 @@ import org.springframework.web.bind.annotation.RestController
 @RestController
 @RequestMapping("/users")
 class UserController(private val userService: UserService) {
-
     @PostMapping
     fun saveUser(@RequestBody user: User): User? {
         return this.userService.saveUser(user)
