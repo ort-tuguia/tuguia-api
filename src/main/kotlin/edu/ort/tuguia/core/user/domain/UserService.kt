@@ -6,9 +6,9 @@ import org.springframework.stereotype.Service
 
 interface UserService {
     fun saveUser(user: User): User?
-    fun getUserByUsername(username: String): User?
+    fun getUserByUsername(username: String): User
     fun registerUser(user: User): User?
-    fun loginUser(login: Login): User?
+    fun loginUser(login: Login): User
 }
 
 @Service
@@ -18,9 +18,9 @@ class UserServiceImpl(private val userRepository: UserRepository): UserService {
         return user
     }
 
-    override fun getUserByUsername(username: String): User? {
+    override fun getUserByUsername(username: String): User {
         return this.userRepository.getUserByUsername(username)
-            ?: throw ApiException(HttpStatus.NOT_FOUND, "El usuario no existe")
+            ?: throw ApiException(HttpStatus.NOT_FOUND, "El usuario $username no existe")
     }
 
     override fun registerUser(user: User): User? {
@@ -32,7 +32,13 @@ class UserServiceImpl(private val userRepository: UserRepository): UserService {
         return this.saveUser(user)
     }
 
-    override fun loginUser(login: Login): User? {
-        return this.getUserByUsername(login.username)
+    override fun loginUser(login: Login): User {
+        val user = this.getUserByUsername(login.username)
+
+        if (!user.checkPassword(login.password)) {
+            throw ApiException(HttpStatus.BAD_REQUEST, "El password ingresado es incorrecto")
+        }
+
+        return user
     }
 }
