@@ -1,9 +1,16 @@
 package edu.ort.tuguia.core.user.domain
 
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder
+import javax.persistence.Entity
+import javax.persistence.Id
+import javax.persistence.Table
 import javax.validation.constraints.Email
 import javax.validation.constraints.NotBlank
 
-class User(username: String, firstName: String, lastName: String, email: String, password: String) {
+@Entity
+@Table(name = "users")
+class User(username: String = "", firstName: String = "", lastName: String = "", email: String = "", password: String = "") {
+    @Id
     @NotBlank(message = "El username es obligatorio")
     var username: String
 
@@ -24,6 +31,10 @@ class User(username: String, firstName: String, lastName: String, email: String,
         this.firstName = firstName
         this.lastName = lastName
         this.email = email
-        this.password = password
+        this.password = BCryptPasswordEncoder().encode(password)
+    }
+
+    fun checkPassword(password: String): Boolean {
+        return BCryptPasswordEncoder().matches(password, this.password)
     }
 }
