@@ -6,7 +6,7 @@ import javax.validation.Valid
 
 
 @RestController
-@RequestMapping("/users")
+@RequestMapping("/api/users")
 class UserController(private val userService: UserService) {
     @PostMapping("/register")
     @ResponseStatus(HttpStatus.CREATED)
@@ -17,7 +17,7 @@ class UserController(private val userService: UserService) {
     @GetMapping("/{username}")
     @ResponseStatus(HttpStatus.OK)
     fun getUserByUsername(@PathVariable username: String): User? {
-        return userService.getUserByUsername(username)
+        return this.userService.getUserByUsername(username)
     }
 
     @PostMapping("/login")

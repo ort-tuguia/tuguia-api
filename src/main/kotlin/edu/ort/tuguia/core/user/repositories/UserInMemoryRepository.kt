@@ -2,11 +2,12 @@ package edu.ort.tuguia.core.user.repositories
 
 import edu.ort.tuguia.core.user.domain.User
 import edu.ort.tuguia.core.user.domain.UserRepository
+import org.springframework.context.annotation.Profile
 import org.springframework.stereotype.Repository
 
 @Repository
-class InMemoryRepository: UserRepository {
-
+@Profile("memdb")
+class UserInMemoryRepository: UserRepository {
     var users: HashMap<String, User> = HashMap()
 
     override fun saveUser(user: User) {
