@@ -1,0 +1,10 @@
+spring:
+  datasource:
+    url: ${JDBC_DATABASE_URL}
+    driver-class-name: org.postgresql.Driver
+  jpa:
+    generate-ddl: true
+    hibernate:
+      ddl-auto: update
+    show-sql: true # TODO: Remove when development is complete
+    database-platform: org.hibernate.dialect.PostgreSQLDialect
