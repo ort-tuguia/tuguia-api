@@ -12,10 +12,10 @@ class Category(id: String = "", name: String = "", description: String = "") {
     @Id
     var id: String
 
-    @NotBlank
+    @NotBlank(message = "El nombre es obligatorio")
     var name: String
 
-    @NotBlank
+    @NotBlank(message = "La descripcion es obligatoria")
     var description: String
 
     lateinit var createdAt: LocalDateTime

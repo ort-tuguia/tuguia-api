@@ -26,6 +26,7 @@ class User(username: String = "", firstName: String = "", lastName: String = "",
     @NotBlank(message = "El password es obligatorio")
     private var password: String
 
+
     init {
         this.username = username
         this.firstName = firstName

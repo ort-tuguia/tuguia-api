@@ -1,16 +1,42 @@
 package edu.ort.tuguia.core.review.domain
 
-class Review(reviewId : String, commentary : String, score : String, activityCode : String) {
+import java.time.LocalDateTime
+import javax.persistence.Entity
+import javax.persistence.Id
+import javax.persistence.Table
+import javax.validation.constraints.Max
+import javax.validation.constraints.Min
+import javax.validation.constraints.NotBlank
 
-    var reviewId : String
+@Entity
+@Table(name = "reviews")
+class Review(id : String = "", commentary : String="", score : Double=0.0, activityId : String= "", touristUsername : String = "") {
+    @Id
+    var id : String
+
+    @NotBlank(message = "El comentario es obligatorio")
     var commentary : String
-    var score : String
-    var activityCode : String
+
+    @Min(0, message = "El puntaje debe ser entre 0 y 5")
+    @Max(5, message = "El puntaje debe ser entre 0 y 5")
+    var score : Double
+
+    @NotBlank(message = "La actividad es obligatoria")
+    var activityId : String
+
+    @NotBlank(message = "El turista es obligatorio")
+    var touristUsername : String
+
+    lateinit var createdAt: LocalDateTime
+
+    var updatedAt: LocalDateTime? = null
+
 
     init {
-        this.reviewId = reviewId
+        this.id = id
         this.commentary = commentary
         this.score = score
-        this.activityCode = activityCode
+        this.activityId = activityId
+        this.touristUsername = touristUsername
     }
 }

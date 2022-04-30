@@ -1,17 +1,19 @@
 package edu.ort.tuguia.core.photo.domain
 
-class Photo(photoId : String, url : String, userName : String, activityCode : String) {
+import javax.validation.constraints.NotBlank
 
-    var photoId : String
-    var url : String
-    var userName : String
-    var activityCode : String
+class Photo(id: String, url: String) {
+
+    var id: String
+
+    @NotBlank(message = "La url es obligatoria")
+    var url: String
+
 
     init {
-        this.photoId = photoId
+        this.id = id
         this.url = url
-        this.userName = userName
-        this.activityCode =activityCode
+
     }
 
 }
