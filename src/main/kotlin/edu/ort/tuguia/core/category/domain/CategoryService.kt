@@ -46,10 +46,10 @@ class CategoryServiceImpl(private val categoryRepository: CategoryRepository): C
     }
 
     override fun deleteCategoryById(id: String): Category {
-        val queryCategory = this.getCategoryById(id)
+        val category = this.getCategoryById(id)
 
-        this.categoryRepository.deleteCategory(queryCategory)
+        this.categoryRepository.deleteCategory(category)
 
-        return queryCategory
+        return category
     }
 }
