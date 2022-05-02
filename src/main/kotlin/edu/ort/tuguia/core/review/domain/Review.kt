@@ -31,7 +31,6 @@ class Review(id : String = "", commentary : String="", score : Double=0.0, activ
 
     var updatedAt: LocalDateTime? = null
 
-
     init {
         this.id = id
         this.commentary = commentary

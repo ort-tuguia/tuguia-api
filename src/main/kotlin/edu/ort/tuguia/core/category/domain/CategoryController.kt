@@ -39,8 +39,7 @@ class CategoryController(private val categoryService: CategoryService) {
         category.id = id
         return this.categoryService.updateCategory(category)
     }
-
-
+    
     @DeleteMapping("/{id}")
     @ResponseStatus(HttpStatus.OK)
     fun deleteCategoryById(@PathVariable id: String): Category? {
