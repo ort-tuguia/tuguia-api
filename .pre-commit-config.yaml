@@ -3,6 +3,6 @@ repos:
     rev: v2.3.0
     hooks:
       - id: pretty-format-kotlin
-        args: [ --autofix ]
+        args: [--autofix]
       - id: pretty-format-java
         args: [--autofix]
