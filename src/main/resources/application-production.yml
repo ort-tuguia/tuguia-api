@@ -8,3 +8,6 @@ spring:
       ddl-auto: update
     show-sql: true # TODO: Remove when development is complete
     database-platform: org.hibernate.dialect.PostgreSQLDialect
+springdoc:
+  api-docs:
+    path: "/swagger"
