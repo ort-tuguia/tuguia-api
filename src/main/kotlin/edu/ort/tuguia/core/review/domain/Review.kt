@@ -1,5 +1,7 @@
 package edu.ort.tuguia.core.review.domain
 
+import com.fasterxml.jackson.annotation.JsonInclude
+import io.swagger.v3.oas.annotations.media.Schema
 import java.time.LocalDateTime
 import javax.persistence.Entity
 import javax.persistence.Id
@@ -17,6 +19,7 @@ class Review(
     activityId: String = "",
     touristUsername: String = ""
 ) {
+    @Schema(readOnly = true)
     @Id
     var id: String
 
@@ -33,8 +36,11 @@ class Review(
     @NotBlank(message = "El turista es obligatorio")
     var touristUsername: String
 
+    @Schema(readOnly = true)
     lateinit var createdAt: LocalDateTime
 
+    @Schema(readOnly = true)
+    @JsonInclude(JsonInclude.Include.NON_NULL)
     var updatedAt: LocalDateTime? = null
 
     init {
