@@ -9,7 +9,13 @@ import javax.validation.constraints.NotBlank
 
 @Entity
 @Table(name = "users")
-class User(username: String = "", firstName: String = "", lastName: String = "", email: String = "", password: String = "") {
+class User(
+    username: String = "",
+    firstName: String = "",
+    lastName: String = "",
+    email: String = "",
+    password: String = ""
+) {
     @Id
     @NotBlank(message = "El username es obligatorio")
     var username: String

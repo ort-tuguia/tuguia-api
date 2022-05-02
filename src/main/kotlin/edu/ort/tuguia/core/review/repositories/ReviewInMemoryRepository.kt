@@ -8,25 +8,24 @@ import org.springframework.stereotype.Repository
 @Repository
 @Profile("memdb")
 class ReviewInMemoryRepository : ReviewRepository {
+    var reviews: HashMap<String, Review> = HashMap()
 
-    var reviews : HashMap<String, Review> = HashMap()
-
-    override fun saveReview(review : Review){
+    override fun saveReview(review: Review) {
 
         reviews[review.id] = review
     }
 
-    override fun getReviewById(id : String) : Review? {
+    override fun getReviewById(id: String): Review? {
 
         return reviews[id]
     }
 
-    override  fun getAllReviews() : List<Review> {
+    override fun getAllReviews(): List<Review> {
 
-        return  ArrayList(reviews.values)
+        return ArrayList(reviews.values)
     }
 
-    override fun deleteReview(review : Review){
+    override fun deleteReview(review: Review) {
 
         reviews.remove(review.id)
     }

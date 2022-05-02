@@ -12,7 +12,7 @@ interface UserService {
 }
 
 @Service
-class UserServiceImpl(private val userRepository: UserRepository): UserService {
+class UserServiceImpl(private val userRepository: UserRepository) : UserService {
     override fun saveUser(user: User): User? {
         this.userRepository.saveUser(user)
         return user

@@ -8,17 +8,18 @@ import javax.validation.constraints.NotBlank
 
 @Entity
 @Table(name = "phones")
-class Phone(id : String = "" , number : String = "", description : String = "", username : String = "") {
+class Phone(id: String = "", number: String = "", description: String = "", username: String = "") {
     @Id
-    var id : String
+    var id: String
+
     @NotBlank(message = "El numero es obligatorio")
-    var number : String
+    var number: String
 
     @NotBlank(message = "La descripcion es obligatoria")
-    var description : String
+    var description: String
 
     @NotBlank(message = "El usuario es obligatorio")
-    var username : String
+    var username: String
 
     lateinit var createdAt: LocalDateTime
 

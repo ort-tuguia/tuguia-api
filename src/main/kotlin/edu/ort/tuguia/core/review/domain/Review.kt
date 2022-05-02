@@ -10,22 +10,28 @@ import javax.validation.constraints.NotBlank
 
 @Entity
 @Table(name = "reviews")
-class Review(id : String = "", commentary : String="", score : Double=0.0, activityId : String= "", touristUsername : String = "") {
+class Review(
+    id: String = "",
+    commentary: String = "",
+    score: Double = 0.0,
+    activityId: String = "",
+    touristUsername: String = ""
+) {
     @Id
-    var id : String
+    var id: String
 
     @NotBlank(message = "El comentario es obligatorio")
-    var commentary : String
+    var commentary: String
 
     @Min(0, message = "El puntaje debe ser entre 0 y 5")
     @Max(5, message = "El puntaje debe ser entre 0 y 5")
-    var score : Double
+    var score: Double
 
     @NotBlank(message = "La actividad es obligatoria")
-    var activityId : String
+    var activityId: String
 
     @NotBlank(message = "El turista es obligatorio")
-    var touristUsername : String
+    var touristUsername: String
 
     lateinit var createdAt: LocalDateTime
 

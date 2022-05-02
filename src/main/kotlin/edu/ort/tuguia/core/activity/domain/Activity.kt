@@ -8,29 +8,35 @@ import javax.validation.constraints.NotBlank
 
 @Entity
 @Table(name = "activities")
-class Activity(id : String = "", name : String = "", description : String= "",coordinates : String="" , price : Double= 0.0,guideUsername : String = "") {
+class Activity(
+    id: String = "",
+    name: String = "",
+    description: String = "",
+    coordinates: String = "",
+    price: Double = 0.0,
+    guideUsername: String = ""
+) {
     @Id
-    var id : String
+    var id: String
 
     @NotBlank(message = "El nombre es obligatorio")
-    var name : String
+    var name: String
 
     @NotBlank(message = "La descripcion es obligatoria")
-    var description : String
+    var description: String
 
     @NotBlank(message = "Las coordenadas son obligatorias")
-    var coordinates : String
+    var coordinates: String
 
     @NotBlank(message = "El precio es obligatorio")
-    var price : Double
+    var price: Double
 
     @NotBlank(message = "El guia es obligatorio")
-    var guideUsername : String
+    var guideUsername: String
 
     lateinit var createdAt: LocalDateTime
 
     var updatedAt: LocalDateTime? = null
-
 
     init {
         this.id = id
