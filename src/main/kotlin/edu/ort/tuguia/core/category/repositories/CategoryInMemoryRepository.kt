@@ -7,7 +7,7 @@ import org.springframework.stereotype.Repository
 
 @Repository
 @Profile("memdb")
-class CategoryInMemoryRepository: CategoryRepository {
+class CategoryInMemoryRepository : CategoryRepository {
     var categories: HashMap<String, Category> = HashMap()
 
     override fun saveCategory(category: Category) {

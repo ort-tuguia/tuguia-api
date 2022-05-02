@@ -1,4 +1,5 @@
 package edu.ort.tuguia.core.activity.repositories
+
 import edu.ort.tuguia.core.activity.domain.Activity
 import edu.ort.tuguia.core.activity.domain.ActivityRepository
 import org.springframework.context.annotation.Profile
@@ -6,7 +7,7 @@ import org.springframework.stereotype.Repository
 
 @Repository
 @Profile("memdb")
-class ActivityInMemoryRepository: ActivityRepository {
+class ActivityInMemoryRepository : ActivityRepository {
     var activities: HashMap<String, Activity> = HashMap()
 
     override fun saveActivity(activity: Activity) {

@@ -4,7 +4,7 @@ import edu.ort.tuguia.tools.helpers.http.ApiException
 import org.springframework.http.HttpStatus
 import org.springframework.stereotype.Service
 import java.time.LocalDateTime
-import java.util.UUID
+import java.util.*
 
 interface CategoryService {
     fun createCategory(category: Category): Category
@@ -15,7 +15,7 @@ interface CategoryService {
 }
 
 @Service
-class CategoryServiceImpl(private val categoryRepository: CategoryRepository): CategoryService {
+class CategoryServiceImpl(private val categoryRepository: CategoryRepository) : CategoryService {
     override fun createCategory(category: Category): Category {
         category.id = UUID.randomUUID().toString()
         category.createdAt = LocalDateTime.now()

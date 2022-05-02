@@ -7,7 +7,7 @@ import org.springframework.stereotype.Repository
 
 @Repository
 @Profile("memdb")
-class UserInMemoryRepository: UserRepository {
+class UserInMemoryRepository : UserRepository {
     var users: HashMap<String, User> = HashMap()
 
     override fun saveUser(user: User) {

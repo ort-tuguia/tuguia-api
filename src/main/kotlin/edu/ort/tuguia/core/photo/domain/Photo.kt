@@ -9,11 +9,9 @@ class Photo(id: String, url: String) {
     @NotBlank(message = "La url es obligatoria")
     var url: String
 
-
     init {
         this.id = id
         this.url = url
 
     }
-
 }

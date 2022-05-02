@@ -1,28 +1,34 @@
 package edu.ort.tuguia.core.user.domain
 
+import io.swagger.v3.oas.annotations.Operation
+import io.swagger.v3.oas.annotations.Parameter
+import io.swagger.v3.oas.annotations.tags.Tag
 import org.springframework.http.HttpStatus
 import org.springframework.web.bind.annotation.*
 import javax.validation.Valid
 
-
+@Tag(name = "Users")
 @RestController
 @RequestMapping("/api/users")
 class UserController(private val userService: UserService) {
+    @Operation(summary = "Register")
     @PostMapping("/register")
     @ResponseStatus(HttpStatus.CREATED)
-    fun registerUser(@RequestBody @Valid user: User): User? {
+    fun registerUser(@RequestBody @Valid @Parameter(description = "User data") user: User): User? {
         return this.userService.registerUser(user)
     }
 
+    @Operation(summary = "Get user by username")
     @GetMapping("/{username}")
     @ResponseStatus(HttpStatus.OK)
-    fun getUserByUsername(@PathVariable username: String): User? {
+    fun getUserByUsername(@PathVariable @Parameter(description = "Username") username: String): User? {
         return this.userService.getUserByUsername(username)
     }
 
+    @Operation(summary = "Login")
     @PostMapping("/login")
     @ResponseStatus(HttpStatus.OK)
-    fun loginUser(@RequestBody @Valid login: Login): User? {
+    fun loginUser(@RequestBody @Valid @Parameter(description = "Login data") login: Login): User? {
         return this.userService.loginUser(login)
     }
 }

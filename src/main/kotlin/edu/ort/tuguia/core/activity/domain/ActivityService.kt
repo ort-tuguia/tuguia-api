@@ -1,9 +1,10 @@
 package edu.ort.tuguia.core.activity.domain
+
 import edu.ort.tuguia.tools.helpers.http.ApiException
 import org.springframework.http.HttpStatus
 import org.springframework.stereotype.Service
 import java.time.LocalDateTime
-import java.util.UUID
+import java.util.*
 
 interface ActivityService {
     fun createActivity(activity: Activity): Activity
@@ -13,8 +14,9 @@ interface ActivityService {
     fun deleteActivityById(id: String): Activity
 
 }
+
 @Service
-class ActivityServiceImpl(private val activityRepository: ActivityRepository): ActivityService {
+class ActivityServiceImpl(private val activityRepository: ActivityRepository) : ActivityService {
     override fun createActivity(activity: Activity): Activity {
         activity.id = UUID.randomUUID().toString()
         activity.createdAt = LocalDateTime.now()
