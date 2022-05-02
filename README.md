@@ -20,7 +20,7 @@ git clone git@github.com:ort-tuguia/tuguia-api.git && cd tuguia-api
 #### Database
 
 This project use a PostgreSQL Database.
-So to initialize the project, the following environment variables need to be set:
+So to initialize the project locally, the following environment variables need to be set:
 
 - **DATABASE_HOST** (ex: localhost)
 - **DATABASE_PORT** (ex: 5432)
@@ -30,7 +30,10 @@ So to initialize the project, the following environment variables need to be set
 
 ## Documentation
 
-- TODO
+### Open API Definition / Swagger
+
+- [On Heroku](https://ort-tuguia-api.herokuapp.com/swagger-ui/index.html)
+- [Local](http://localhost:8080/swagger-ui/index.html)
 
 ## Developed By
 
