@@ -1,6 +1,7 @@
 package edu.ort.tuguia.core.activity.domain
 
 import edu.ort.tuguia.tools.helpers.http.ApiException
+import edu.ort.tuguia.tools.utils.DistanceCalculator
 import org.springframework.http.HttpStatus
 import org.springframework.stereotype.Service
 import java.time.LocalDateTime
@@ -12,8 +13,15 @@ interface ActivityService {
     fun getAllActivities(): List<Activity>
     fun updateActivity(activity: Activity): Activity
     fun deleteActivityById(id: String): Activity
-
+    fun getCloseActivities(
+        currentLatitude: Double,
+        currentLongitude: Double,
+        maxKm: Double,
+        maxResults: Int
+    ): List<Activity> // TODO: Add categories filter
 }
+
+private const val MAX_RESULTS = 50
 
 @Service
 class ActivityServiceImpl(private val activityRepository: ActivityRepository) : ActivityService {
@@ -52,5 +60,36 @@ class ActivityServiceImpl(private val activityRepository: ActivityRepository) : 
         this.activityRepository.deleteActivity(queryActivity)
 
         return queryActivity
+    }
+
+    override fun getCloseActivities(
+        currentLatitude: Double,
+        currentLongitude: Double,
+        maxKm: Double,
+        maxResults: Int
+    ): List<Activity> {
+        val allActivities = this.getAllActivities()
+
+        allActivities.forEach {
+            it.distanceKm = DistanceCalculator.distance(
+                currentLatitude,
+                currentLongitude,
+                it.locationLatitude,
+                it.locationLongitude
+            )
+        }
+
+        var closeActivities = allActivities.filter {
+            it.distanceKm <= maxKm
+        }.sortedBy { it.distanceKm }
+
+
+        val maxResults = if (maxResults < MAX_RESULTS) maxResults else MAX_RESULTS
+
+        if (closeActivities.size > maxResults) {
+            closeActivities = closeActivities.slice(0 until maxResults)
+        }
+
+        return closeActivities
     }
 }
