@@ -4,6 +4,7 @@ import java.time.LocalDateTime
 import javax.persistence.Entity
 import javax.persistence.Id
 import javax.persistence.Table
+import javax.validation.constraints.Min
 import javax.validation.constraints.NotBlank
 
 @Entity
@@ -28,7 +29,7 @@ class Activity(
     @NotBlank(message = "Las coordenadas son obligatorias")
     var coordinates: String
 
-    @NotBlank(message = "El precio es obligatorio")
+    @Min(0, message = "El precio debe ser como mínimo $0")
     var price: Double
 
     @NotBlank(message = "El guia es obligatorio")
