@@ -5,6 +5,7 @@ import edu.ort.tuguia.core.category.domain.CategoryRepository
 import org.springframework.context.annotation.Profile
 import org.springframework.stereotype.Repository
 import javax.persistence.EntityManager
+import javax.persistence.NoResultException
 import javax.persistence.PersistenceContext
 import javax.transaction.Transactional
 
@@ -21,6 +22,18 @@ class CategoryPostgresRepository : CategoryRepository {
 
     override fun getCategoryById(id: String): Category? {
         return em.find(Category::class.java, id)
+    }
+
+    override fun getCategoryByName(name: String): Category? {
+        val query = em.criteriaBuilder.createQuery(Category::class.java)
+        val from = query.from(Category::class.java)
+        val select = query.select(from).where(em.criteriaBuilder.equal(em.criteriaBuilder.lower(from.get("name")), name.lowercase()))
+
+        return try {
+            em.createQuery(select).singleResult
+        } catch (ex: NoResultException) {
+            null
+        }
     }
 
     override fun getAllCategories(): List<Category> {

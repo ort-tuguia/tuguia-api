@@ -18,6 +18,16 @@ class CategoryInMemoryRepository : CategoryRepository {
         return categories[id]
     }
 
+    override fun getCategoryByName(name: String): Category? {
+        categories.forEach {
+            if (it.value.name.lowercase().equals(name.lowercase())) {
+                return it.value
+            }
+        }
+
+        return null
+    }
+
     override fun getAllCategories(): List<Category> {
         return ArrayList(categories.values)
     }
