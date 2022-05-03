@@ -25,6 +25,13 @@ class CategoryController(private val categoryService: CategoryService) {
         return this.categoryService.getCategoryById(id)
     }
 
+    @Operation(summary = "Get category by name")
+    @GetMapping("/name/{name}")
+    @ResponseStatus(HttpStatus.OK)
+    fun getCategoryByName(@PathVariable @Parameter(description = "Name of category") name: String): Category? {
+        return this.categoryService.getCategoryByName(name)
+    }
+
     @Operation(summary = "Get all categories")
     @GetMapping("")
     @ResponseStatus(HttpStatus.OK)
