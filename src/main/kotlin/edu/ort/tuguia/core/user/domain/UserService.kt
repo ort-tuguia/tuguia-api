@@ -7,7 +7,7 @@ import org.springframework.stereotype.Service
 interface UserService {
     fun saveUser(user: User): User?
     fun getUserByUsername(username: String): User
-    fun registerUser(user: User): User?
+    fun registerUser(register: Register): User?
     fun loginUser(login: Login): User
 }
 
@@ -23,7 +23,17 @@ class UserServiceImpl(private val userRepository: UserRepository) : UserService 
             ?: throw ApiException(HttpStatus.NOT_FOUND, "El usuario $username no existe")
     }
 
-    override fun registerUser(user: User): User? {
+    override fun registerUser(register: Register): User? {
+        val userRole = if (register.isGuide) UserRole.GUIDE else UserRole.TOURIST
+        val user = User(
+            register.username,
+            register.firstName,
+            register.lastName,
+            register.email,
+            register.password,
+            userRole
+        )
+
         val queryUser = this.userRepository.getUserByUsername(user.username)
         if (queryUser != null) {
             throw ApiException(HttpStatus.BAD_REQUEST, "El usuario ${user.username} ya se encuentra registrado")

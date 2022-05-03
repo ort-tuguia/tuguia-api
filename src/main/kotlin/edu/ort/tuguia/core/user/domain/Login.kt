@@ -11,7 +11,6 @@ class Login(username: String, password: String) {
 
     init {
         this.username = username.lowercase()
-        // TODO: Hash password with Spring Security
         this.password = password
     }
 }
