@@ -18,13 +18,6 @@ class UserController(private val userService: UserService) {
         return this.userService.registerUser(register)
     }
 
-    @Operation(summary = "Get user by username")
-    @GetMapping("/{username}")
-    @ResponseStatus(HttpStatus.OK)
-    fun getUserByUsername(@PathVariable @Parameter(description = "Username") username: String): User? {
-        return this.userService.getUserByUsername(username)
-    }
-
     @Operation(summary = "Login")
     @PostMapping("/login")
     @ResponseStatus(HttpStatus.OK)
