@@ -13,7 +13,7 @@ class User(
     lastName: String = "",
     email: String = "",
     password: String = "",
-    role: UserRole = UserRole.TOURIST
+    role: UserRole? = null
 ) {
     @Id
     @NotBlank(message = "El username es obligatorio")
@@ -32,7 +32,7 @@ class User(
     private var password: String
 
     @Enumerated(EnumType.STRING)
-    var role: UserRole
+    lateinit var role: UserRole
 
     init {
         this.username = username
@@ -40,7 +40,9 @@ class User(
         this.lastName = lastName
         this.email = email
         this.password = BCryptPasswordEncoder().encode(password)
-        this.role = role
+        if (role != null) {
+            this.role = role
+        }
     }
 
     fun checkPassword(password: String): Boolean {
