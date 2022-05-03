@@ -1,5 +1,6 @@
 package edu.ort.tuguia.core.user.domain
 
+import com.fasterxml.jackson.annotation.JsonProperty
 import javax.validation.constraints.Email
 import javax.validation.constraints.NotBlank
 
@@ -27,6 +28,8 @@ class Register(
     val password: String
 
     val isGuide: Boolean
+        @JsonProperty("isGuide")
+        get
 
     init {
         this.username = username.lowercase()
