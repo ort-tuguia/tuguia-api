@@ -4,6 +4,7 @@ import com.google.auth.Credentials
 import com.google.auth.oauth2.GoogleCredentials
 import com.google.cloud.storage.*
 import com.google.firebase.messaging.SendResponse
+import edu.ort.tuguia.core.category.domain.CategoryRepository
 import org.springframework.stereotype.Service
 import org.springframework.web.multipart.MultipartFile
 import java.io.File
@@ -13,10 +14,12 @@ import java.io.IOException
 import java.net.URLEncoder
 import java.nio.charset.StandardCharsets
 import java.nio.file.Files
+import java.nio.file.Paths
+import java.time.LocalDateTime
 import java.util.*
 
 @Service
-class PhotoService {
+class PhotoService(private val photoRepository: PhotoRepository) {
 
     fun upload(multipartFile: MultipartFile): Any {
         return try {
@@ -27,6 +30,10 @@ class PhotoService {
             var TEMP_URL : String = uploadFile(file!!, fileName) // to get uploaded file link
             file.delete() // to delete the copy of uploaded file stored in the project folder
             //SendResponse("Successfully Uploaded !",TEMP_URL) // Your customized response
+            var photo = Photo()
+            photo.createdAt = LocalDateTime.now()
+            photo.filename = fileName
+            photoRepository.savePhoto(photo)
             return ("Successfully Uploaded !$TEMP_URL");
         } catch (e: Exception) {
             e.printStackTrace()
@@ -34,21 +41,20 @@ class PhotoService {
         }
     }
 
-    /*@Throws(IOException::class)
+    @Throws(IOException::class)
     fun download(fileName: String): Any {
-        val destFileName =
-            UUID.randomUUID().toString() + getExtension(fileName!!) // to set random strinh for destination file name
-        val destFilePath = "./" // to set destination file path
+        val destFileName = UUID.randomUUID().toString() + getExtension(fileName!!) // to set random strinh for destination file name
+        val destFilePath = "Storage/" + destFileName;  // to set destination file path
 
         ////////////////////////////////   Download  ////////////////////////////////////////////////////////////////////////
-        val credentials: Credentials =
-            GoogleCredentials.fromStream(FileInputStream("path of JSON with genarated private key"))
+        val credentials: Credentials = GoogleCredentials.fromStream(FileInputStream("src/main/resources/tuguia-ort-firebase.json"))
         val storage = StorageOptions.newBuilder().setCredentials(credentials).build().service
-        val blob: Blob = storage[BlobId.of("your bucket name", fileName)]
+        val blob: Blob = storage[BlobId.of("tuguia-ort.appspot.com", fileName)]
+
         blob.downloadTo(Paths.get(destFilePath))
-        return sendResponse("200", "Successfully Downloaded!")
-    }*/
-    @Throws(IOException::class)
+        return ("200 Successfully Downloaded!")
+    }
+
     private fun uploadFile(file: File, fileName: String): String {
         val blobId = BlobId.of("tuguia-ort.appspot.com", fileName)
         val blobInfo = BlobInfo.newBuilder(blobId).setContentType("media").build()
