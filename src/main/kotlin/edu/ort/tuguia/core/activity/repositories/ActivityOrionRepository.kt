@@ -2,7 +2,7 @@ package edu.ort.tuguia.core.activity.repositories
 
 import edu.ort.tuguia.core.activity.domain.Activity
 import edu.ort.tuguia.core.activity.domain.ActivityRepository
-import edu.ort.tuguia.tools.orion.OrionAttr
+import edu.ort.tuguia.core.activity.domain.OrionActivity
 import edu.ort.tuguia.tools.orion.OrionClient
 import edu.ort.tuguia.tools.orion.OrionEntity
 import org.springframework.context.annotation.Profile
@@ -13,28 +13,46 @@ import org.springframework.stereotype.Repository
 class ActivityOrionRepository(val orionClient: OrionClient) : ActivityRepository {
     val entityType = "Activity"
 
-    override fun saveActivity(activity: Activity) {
-        val activityJSON = OrionEntity.orionEntityBuilder(activity.id, entityType, listOf(
-            OrionAttr("name", "String", activity.name),
-            OrionAttr("description", "String", activity.description),
-            OrionAttr("location", "geo:point", "${activity.locationLatitude}, ${activity.locationLongitude}"),
-            OrionAttr("price", "Float", activity.price),
-            OrionAttr("guideUsername", "String", activity.guideUsername),
-            // TODO: Add dates
-        ))
+    override fun createActivity(activity: Activity) {
+        val activityJSON = OrionEntity.orionEntityBuilder(
+            activity.id, entityType, mutableListOf(
+                OrionEntity.Attr("name", OrionEntity.TypeString, activity.name),
+                OrionEntity.Attr("description", OrionEntity.TypeString, activity.description),
+                OrionEntity.Attr("location", OrionEntity.TypeGeoPoint, "${activity.locationLatitude}, ${activity.locationLongitude}"),
+                OrionEntity.Attr("price", OrionEntity.TypeDouble, activity.price),
+                OrionEntity.Attr("guideUsername", OrionEntity.TypeString, activity.guideUsername),
+                OrionEntity.Attr("createdAt", OrionEntity.TypeTimestamp, activity.createdAt.toString())
+            )
+        )
 
-        orionClient.saveEntity(activityJSON)
+        orionClient.createEntity(activityJSON)
+    }
+
+    override fun updateActivity(activity: Activity) {
+        orionClient.updateEntity(activity.id, entityType, listOf(
+            OrionEntity.Attr("name", OrionEntity.TypeString, activity.name),
+            OrionEntity.Attr("description", OrionEntity.TypeString, activity.description),
+            OrionEntity.Attr("location", OrionEntity.TypeGeoPoint, "${activity.locationLatitude}, ${activity.locationLongitude}"),
+            OrionEntity.Attr("price", OrionEntity.TypeDouble, activity.price),
+            OrionEntity.Attr("updatedAt", OrionEntity.TypeTimestamp, activity.updatedAt.toString())
+        ))
     }
 
     override fun getActivityById(id: String): Activity? {
-        TODO("Not yet implemented")
+        val orionActivity = orionClient.getEntityById(id, OrionActivity::class.java) ?: return null
+
+        return orionActivity.toActivity()
     }
 
     override fun getAllActivities(): List<Activity> {
-        TODO("Not yet implemented")
+        val orionActivities = orionClient.getAllEntities(entityType, OrionActivity::class.java)
+
+        return orionActivities.map {
+            it.toActivity()
+        }
     }
 
     override fun deleteActivity(activity: Activity) {
-        TODO("Not yet implemented")
+        return orionClient.deleteEntityById(activity.id)
     }
 }
