@@ -10,7 +10,11 @@ import org.springframework.stereotype.Repository
 class ActivityInMemoryRepository : ActivityRepository {
     var activities: HashMap<String, Activity> = HashMap()
 
-    override fun saveActivity(activity: Activity) {
+    override fun createActivity(activity: Activity) {
+        activities[activity.id] = activity
+    }
+
+    override fun updateActivity(activity: Activity) {
         activities[activity.id] = activity
     }
 
