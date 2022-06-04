@@ -28,7 +28,7 @@ class ActivityServiceImpl(private val activityRepository: ActivityRepository) : 
     override fun createActivity(activity: Activity): Activity {
         activity.id = UUID.randomUUID().toString()
         activity.createdAt = LocalDateTime.now()
-        this.activityRepository.saveActivity(activity)
+        this.activityRepository.createActivity(activity)
 
         return activity
     }
@@ -47,9 +47,12 @@ class ActivityServiceImpl(private val activityRepository: ActivityRepository) : 
 
         queryActivity.name = activity.name
         queryActivity.description = activity.description
+        queryActivity.locationLatitude = activity.locationLatitude
+        queryActivity.locationLongitude = activity.locationLongitude
+        queryActivity.price = activity.price
         queryActivity.updatedAt = LocalDateTime.now()
 
-        this.activityRepository.saveActivity(queryActivity)
+        this.activityRepository.updateActivity(queryActivity)
 
         return queryActivity
     }
