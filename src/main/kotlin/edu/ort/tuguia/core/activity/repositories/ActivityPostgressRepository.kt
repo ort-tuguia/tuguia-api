@@ -15,7 +15,11 @@ class ActivityPostgressRepository : ActivityRepository {
     @PersistenceContext
     private lateinit var em: EntityManager
 
-    override fun saveActivity(activity: Activity) {
+    override fun createActivity(activity: Activity) {
+        em.persist(activity)
+    }
+
+    override fun updateActivity(activity: Activity) {
         em.persist(activity)
     }
 
