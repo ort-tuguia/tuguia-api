@@ -1,10 +1,33 @@
 version: "3.9"
 services:
-  db:
+  orion:
+    image: fiware/orion
+    hostname: orion
+    container_name: fiware-orion
+    depends_on:
+      - mongo-db
+    ports:
+      - "1026:1026"
+    command: -dbhost mongo-db -logLevel DEBUG -noCache
+  postgres-db:
     image: postgres:14.2
+    hostname: postgres-db
+    container_name: db-postgres
     environment:
       POSTGRES_DB: tuguia
       POSTGRES_USER: postgres
       POSTGRES_PASSWORD: password
     ports:
       - "5432:5432"
+  mongo-db:
+    image: mongo:3.6
+    hostname: mongo-db
+    container_name: db-mongo
+    ports:
+      - "27017:27017"
+    command: --bind_ip_all --smallfiles
+    volumes:
+      - mongo-db:/data
+
+volumes:
+  mongo-db: ~
