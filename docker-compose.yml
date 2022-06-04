@@ -12,6 +12,7 @@ services:
   postgres-db:
     image: postgres:14.2
     hostname: postgres-db
+    container_name: db-postgres
     environment:
       POSTGRES_DB: tuguia
       POSTGRES_USER: postgres
