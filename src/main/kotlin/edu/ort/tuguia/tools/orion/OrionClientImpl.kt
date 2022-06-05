@@ -93,6 +93,22 @@ class OrionClientImpl : OrionClient {
         return objectMapper.readValue(response.body(), listType)
     }
 
+    override fun <T : Any> getAllEntities(entityType: String, typeClass: Class<T>, filters: List<String>): List<T> {
+        var query = "q="
+        filters.forEach {
+            query += "$it;"
+        }
+        val request = HttpRequest.newBuilder()
+            .uri(URI.create("$baseURL$entityEndpoint?type=$entityType&$query"))
+            .build()
+
+        val response = httpClient.send(request, HttpResponse.BodyHandlers.ofString())
+
+        val listType = objectMapper.typeFactory.constructCollectionType(List::class.java, typeClass)
+
+        return objectMapper.readValue(response.body(), listType)
+    }
+
     override fun deleteEntityById(id: String) {
         val request = HttpRequest.newBuilder()
             .uri(URI.create("$baseURL$entityEndpoint/$id"))

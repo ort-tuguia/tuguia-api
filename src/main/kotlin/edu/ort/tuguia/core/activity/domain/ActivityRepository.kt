@@ -6,5 +6,6 @@ interface ActivityRepository {
     fun updateActivity(activity: Activity)
     fun getActivityById(id: String): Activity?
     fun getAllActivities(): List<Activity>
+    fun getActivitiesByCategories(categoriesIds: List<String>): List<Activity>
     fun deleteActivity(activity: Activity)
 }

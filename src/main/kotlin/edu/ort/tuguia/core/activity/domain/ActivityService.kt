@@ -1,5 +1,6 @@
 package edu.ort.tuguia.core.activity.domain
 
+import edu.ort.tuguia.core.category.domain.CategoryService
 import edu.ort.tuguia.tools.helpers.http.ApiException
 import edu.ort.tuguia.tools.utils.DistanceCalculator
 import org.springframework.http.HttpStatus
@@ -11,6 +12,7 @@ interface ActivityService {
     fun createActivity(activity: Activity): Activity
     fun getActivityById(id: String): Activity
     fun getAllActivities(): List<Activity>
+    fun getActivitiesByCategories(categoriesIds: List<String>): List<Activity>
     fun updateActivity(activity: Activity): Activity
     fun deleteActivityById(id: String): Activity
     fun getCloseActivities(searchOptions: ActivitySearchOptions): List<Activity>
@@ -19,22 +21,34 @@ interface ActivityService {
 private const val MAX_RESULTS = 50
 
 @Service
-class ActivityServiceImpl(private val activityRepository: ActivityRepository) : ActivityService {
+class ActivityServiceImpl(
+    private val activityRepository: ActivityRepository,
+    private val categoryService: CategoryService) : ActivityService {
     override fun createActivity(activity: Activity): Activity {
         activity.id = UUID.randomUUID().toString()
+        activity.category = this.categoryService.getCategoryById(activity.categoryId)
         activity.createdAt = LocalDateTime.now()
+
         this.activityRepository.createActivity(activity)
 
         return activity
     }
 
     override fun getActivityById(id: String): Activity {
-        return this.activityRepository.getActivityById(id)
+        val activity = this.activityRepository.getActivityById(id)
             ?: throw ApiException(HttpStatus.NOT_FOUND, "La actividad con id $id no existe")
+
+        activity.category = this.categoryService.getCategoryById(activity.categoryId)
+
+        return activity
     }
 
     override fun getAllActivities(): List<Activity> {
         return this.activityRepository.getAllActivities()
+    }
+
+    override fun getActivitiesByCategories(categoriesIds: List<String>): List<Activity> {
+        return this.activityRepository.getActivitiesByCategories(categoriesIds)
     }
 
     override fun updateActivity(activity: Activity): Activity {
@@ -45,6 +59,12 @@ class ActivityServiceImpl(private val activityRepository: ActivityRepository) : 
         queryActivity.locationLatitude = activity.locationLatitude
         queryActivity.locationLongitude = activity.locationLongitude
         queryActivity.price = activity.price
+
+        if (queryActivity.categoryId != activity.categoryId) {
+            queryActivity.categoryId = activity.categoryId
+            queryActivity.category = this.categoryService.getCategoryById(activity.categoryId)
+        }
+
         queryActivity.updatedAt = LocalDateTime.now()
 
         this.activityRepository.updateActivity(queryActivity)
@@ -61,7 +81,11 @@ class ActivityServiceImpl(private val activityRepository: ActivityRepository) : 
     }
 
     override fun getCloseActivities(searchOptions: ActivitySearchOptions): List<Activity> {
-        val allActivities = this.getAllActivities()
+        val allActivities: List<Activity> = if (searchOptions.categoriesIds.isEmpty())
+            this.getAllActivities()
+        else {
+            this.getActivitiesByCategories(searchOptions.categoriesIds)
+        }
 
         allActivities.forEach {
             it.distanceKm = DistanceCalculator.distance(
