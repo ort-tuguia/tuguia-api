@@ -2,7 +2,6 @@ package edu.ort.tuguia.core.activity.domain
 
 import io.swagger.v3.oas.annotations.Operation
 import io.swagger.v3.oas.annotations.Parameter
-import io.swagger.v3.oas.annotations.media.Schema
 import io.swagger.v3.oas.annotations.tags.Tag
 import org.springframework.http.HttpStatus
 import org.springframework.web.bind.annotation.*
@@ -52,14 +51,9 @@ class ActivityController(private val activityService: ActivityService) {
     }
 
     @Operation(summary = "Get close activities by location")
-    @GetMapping("/search")
+    @PostMapping("/search")
     @ResponseStatus(HttpStatus.OK)
-    fun getCloseActivitiesByLocation(
-        @RequestParam @Parameter(description = "Current latitude") currentLatitude: Double,
-        @RequestParam @Parameter(description = "Current longitude") currentLongitude: Double,
-        @RequestParam @Parameter(description = "Maximum radius in KM") maxKm: Double,
-        @RequestParam(required = false) @Parameter(description = "Max results") @Schema(defaultValue = "50") maxResults: Int
-    ): List<Activity> {
-        return this.activityService.getCloseActivities(currentLatitude, currentLongitude, maxKm, maxResults)
+    fun getCloseActivitiesByLocation(@RequestBody @Valid @Parameter(name = "Search Options") searchOptions: ActivitySearchOptions): List<Activity> {
+        return this.activityService.getCloseActivities(searchOptions)
     }
 }
