@@ -14,7 +14,7 @@ class WebConfig : WebMvcConfigurer {
 
     override fun addInterceptors(registry: InterceptorRegistry) {
         registry.addInterceptor(AuthMiddleware())
-            .addPathPatterns("/api/**")
+            .addPathPatterns("/api/*")
             .excludePathPatterns(
                 listOf(
                     "/api/users/login",
