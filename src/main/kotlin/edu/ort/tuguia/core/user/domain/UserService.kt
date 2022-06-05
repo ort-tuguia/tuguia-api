@@ -29,13 +29,15 @@ class UserServiceImpl(
 
     override fun registerUser(register: Register): User? {
         val userRole = if (register.isGuide) UserRole.GUIDE else UserRole.TOURIST
+        val guideIdentification = if (register.isGuide) register.guideIdentification else null
         val user = User(
             register.username,
             register.firstName,
             register.lastName,
             register.email,
             register.password,
-            userRole
+            userRole,
+            guideIdentification
         )
 
         val queryUser = this.userRepository.getUserByUsername(user.username)
