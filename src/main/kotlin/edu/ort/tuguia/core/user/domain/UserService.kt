@@ -1,5 +1,6 @@
 package edu.ort.tuguia.core.user.domain
 
+import edu.ort.tuguia.core.category.domain.CategoryService
 import edu.ort.tuguia.tools.helpers.http.ApiException
 import org.springframework.http.HttpStatus
 import org.springframework.stereotype.Service
@@ -9,10 +10,13 @@ interface UserService {
     fun getUserByUsername(username: String): User
     fun registerUser(register: Register): User?
     fun loginUser(login: Login): User
+    fun addUserFavCategories(username: String, categoriesIds: List<String>): User
 }
 
 @Service
-class UserServiceImpl(private val userRepository: UserRepository) : UserService {
+class UserServiceImpl(
+    private val userRepository: UserRepository,
+    private val categoryService: CategoryService) : UserService {
     override fun saveUser(user: User): User? {
         this.userRepository.saveUser(user)
         return user
@@ -48,6 +52,24 @@ class UserServiceImpl(private val userRepository: UserRepository) : UserService 
         if (!user.checkPassword(login.password)) {
             throw ApiException(HttpStatus.BAD_REQUEST, "El password ingresado es incorrecto")
         }
+
+        return user
+    }
+
+    override fun addUserFavCategories(username: String, categoriesIds: List<String>): User {
+        val user = this.getUserByUsername(username)
+
+        val categories = categoriesIds.map {
+            this.categoryService.getCategoryById(it)
+        }
+
+        categories.forEach {
+            if (!user.favCategories.contains(it)) {
+                user.favCategories.add(it)
+            }
+        }
+
+        this.saveUser(user)
 
         return user
     }

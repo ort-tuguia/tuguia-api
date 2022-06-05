@@ -24,7 +24,10 @@ class UserController(private val userService: UserService) {
     @Operation(summary = "Login")
     @PostMapping("/login")
     @ResponseStatus(HttpStatus.OK)
-    fun loginUser(@RequestBody @Valid @Parameter(description = "Login data") login: Login, response: HttpServletResponse): User? {
+    fun loginUser(
+        @RequestBody @Valid @Parameter(description = "Login data") login: Login,
+        response: HttpServletResponse
+    ): User? {
         val user = this.userService.loginUser(login)
         JwtAuth.initializeToken(user.username, response)
         return this.userService.loginUser(login)
@@ -38,10 +41,21 @@ class UserController(private val userService: UserService) {
     }
 
     @Operation(summary = "Get User Details")
-    @PostMapping("/details")
+    @GetMapping("/details")
     @ResponseStatus(HttpStatus.OK)
     fun getUserDetails(request: HttpServletRequest): User? {
         val username = JwtAuth.getUsernameFromRequest(request)
         return this.userService.getUserByUsername(username)
+    }
+
+    @Operation(summary = "Add User Favorite Categories")
+    @PostMapping("/categories")
+    @ResponseStatus(HttpStatus.OK)
+    fun addUserFavCategories(
+        request: HttpServletRequest,
+        @RequestBody @Parameter(description = "Categories ID's") categoriesIds: List<String>
+    ): User {
+        val username = JwtAuth.getUsernameFromRequest(request)
+        return this.userService.addUserFavCategories(username, categoriesIds)
     }
 }

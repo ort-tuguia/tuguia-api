@@ -1,5 +1,6 @@
 package edu.ort.tuguia.core.user.domain
 
+import edu.ort.tuguia.core.category.domain.Category
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder
 import javax.persistence.*
 import javax.validation.constraints.Email
@@ -34,6 +35,13 @@ class User(
     @Enumerated(EnumType.STRING)
     lateinit var role: UserRole
 
+    @ManyToMany
+    @JoinTable(
+        name = "user_categories",
+        joinColumns = [JoinColumn(name = "username")],
+        inverseJoinColumns = [JoinColumn(name = "category_id")])
+    var favCategories: MutableList<Category>
+
     init {
         this.username = username
         this.firstName = firstName
@@ -43,6 +51,7 @@ class User(
         if (role != null) {
             this.role = role
         }
+        this.favCategories = mutableListOf()
     }
 
     fun checkPassword(password: String): Boolean {
