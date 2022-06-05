@@ -35,6 +35,14 @@ class ActivityPostgressRepository : ActivityRepository {
         return em.createQuery(select).resultList
     }
 
+    override fun getActivitiesByCategories(categoriesIds: List<String>): List<Activity> {
+        val query = em.criteriaBuilder.createQuery(Activity::class.java)
+        val from = query.from(Activity::class.java)
+        val select = query.select(from).where(from.get<Boolean?>("categoryId").`in`(categoriesIds))
+
+        return em.createQuery(select).resultList
+    }
+
     override fun deleteActivity(activity: Activity) {
         em.remove(activity)
     }
