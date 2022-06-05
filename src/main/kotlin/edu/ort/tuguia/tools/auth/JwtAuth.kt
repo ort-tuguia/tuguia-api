@@ -24,6 +24,7 @@ class JwtAuth {
 
             val jwtCookie = Cookie(CookieKey, jwtToken)
             response.addCookie(jwtCookie)
+            response.addHeader(AuthHeader, TokenPrefix + jwtToken)
         }
 
         fun clearToken(response: HttpServletResponse) {
