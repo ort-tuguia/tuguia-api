@@ -20,6 +20,7 @@ class ActivityOrionRepository(val orionClient: OrionClient) : ActivityRepository
                 OrionEntity.Attr("description", OrionEntity.TypeString, activity.description),
                 OrionEntity.Attr("location", OrionEntity.TypeGeoPoint, "${activity.locationLatitude}, ${activity.locationLongitude}"),
                 OrionEntity.Attr("price", OrionEntity.TypeDouble, activity.price),
+                OrionEntity.Attr("categoryId", OrionEntity.TypeString, activity.categoryId),
                 OrionEntity.Attr("guideUsername", OrionEntity.TypeString, activity.guideUsername),
                 OrionEntity.Attr("createdAt", OrionEntity.TypeTimestamp, activity.createdAt.toString())
             )
@@ -34,6 +35,7 @@ class ActivityOrionRepository(val orionClient: OrionClient) : ActivityRepository
             OrionEntity.Attr("description", OrionEntity.TypeString, activity.description),
             OrionEntity.Attr("location", OrionEntity.TypeGeoPoint, "${activity.locationLatitude}, ${activity.locationLongitude}"),
             OrionEntity.Attr("price", OrionEntity.TypeDouble, activity.price),
+            OrionEntity.Attr("categoryId", OrionEntity.TypeString, activity.categoryId),
             OrionEntity.Attr("updatedAt", OrionEntity.TypeTimestamp, activity.updatedAt.toString())
         ))
     }
@@ -46,6 +48,17 @@ class ActivityOrionRepository(val orionClient: OrionClient) : ActivityRepository
 
     override fun getAllActivities(): List<Activity> {
         val orionActivities = orionClient.getAllEntities(entityType, OrionActivity::class.java)
+
+        return orionActivities.map {
+            it.toActivity()
+        }
+    }
+
+    override fun getActivitiesByCategories(categoriesIds: List<String>): List<Activity> {
+        val categories = categoriesIds.joinToString(separator = ",")
+        val orionActivities = orionClient.getAllEntities(entityType, OrionActivity::class.java, listOf(
+            "categoryId:$categories"
+        ))
 
         return orionActivities.map {
             it.toActivity()
