@@ -17,8 +17,8 @@ class WebConfig : WebMvcConfigurer {
             .addPathPatterns("/api/*")
             .excludePathPatterns(
                 listOf(
-                    "/api/users/login",
-                    "/api/users/register"
+                    "/api/user/login",
+                    "/api/user/register"
                 )
             )
     }
