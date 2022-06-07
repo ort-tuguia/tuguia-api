@@ -38,25 +38,39 @@ class ActivityController(private val activityService: ActivityService) {
         return this.activityService.getAllActivities()
     }
 
+    @Operation(summary = "Get my activities")
+    @GetMapping("/myself")
+    @ResponseStatus(HttpStatus.OK)
+    fun getMyActivities(request: HttpServletRequest): List<Activity> {
+        val username = JwtAuth.getUsernameFromRequest(request)
+        return this.activityService.getMyActivities(username)
+    }
+
     @Operation(summary = "Update an activity")
     @PutMapping("/{id}")
     @ResponseStatus(HttpStatus.OK)
     fun updateActivity(
+        request: HttpServletRequest,
         @PathVariable @Parameter(description = "ID of activity") id: String,
         @RequestBody @Valid @Parameter(description = "Activity") activity: Activity
     ): Activity? {
+        val username = JwtAuth.getUsernameFromRequest(request)
         activity.id = id
-        return this.activityService.updateActivity(activity)
+        return this.activityService.updateActivity(username, activity)
     }
 
     @Operation(summary = "Delete activity by ID")
     @DeleteMapping("/{id}")
     @ResponseStatus(HttpStatus.OK)
-    fun deleteActivityById(@PathVariable @Parameter(description = "ID of activity") id: String): Activity? {
-        return this.activityService.deleteActivityById(id)
+    fun deleteActivityById(
+        request: HttpServletRequest,
+        @PathVariable @Parameter(description = "ID of activity") id: String
+    ): Activity? {
+        val username = JwtAuth.getUsernameFromRequest(request)
+        return this.activityService.deleteActivityById(username, id)
     }
 
-    @Operation(summary = "Get close activities by location")
+    @Operation(summary = "Get close activities by location and filters")
     @PostMapping("/search")
     @ResponseStatus(HttpStatus.OK)
     fun getCloseActivitiesByLocation(@RequestBody @Valid @Parameter(name = "Search Options") searchOptions: ActivitySearchOptions): List<Activity> {
