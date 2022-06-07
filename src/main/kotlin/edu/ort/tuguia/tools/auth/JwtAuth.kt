@@ -33,7 +33,7 @@ class JwtAuth {
         }
 
         fun getUsernameFromRequest(request: HttpServletRequest): String {
-            val jwtToken = this.getTokenFromCookies(request)
+            val jwtToken = this.getTokenFromRequest(request)
                 ?: throw ApiException(HttpStatus.UNAUTHORIZED, "User not found in context")
             return this.getUsernameFromToken(jwtToken)
         }
