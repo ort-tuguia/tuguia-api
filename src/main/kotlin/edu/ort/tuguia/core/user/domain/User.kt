@@ -2,6 +2,7 @@ package edu.ort.tuguia.core.user.domain
 
 import com.fasterxml.jackson.annotation.JsonInclude
 import edu.ort.tuguia.core.category.domain.Category
+import edu.ort.tuguia.core.phone.domain.Phone
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder
 import javax.persistence.*
 import javax.validation.constraints.Email
@@ -37,6 +38,9 @@ class User(
     @Enumerated(EnumType.STRING)
     lateinit var role: UserRole
 
+    @OneToMany(mappedBy = "user", cascade = [CascadeType.ALL], orphanRemoval = true)
+    var phones: MutableList<Phone>
+
     @JsonInclude(JsonInclude.Include.NON_NULL)
     var guideIdentification: String? = null
 
@@ -56,6 +60,7 @@ class User(
         if (role != null) {
             this.role = role
         }
+        this.phones = mutableListOf()
         if (guideIdentification != null) {
             this.guideIdentification = guideIdentification
         }
@@ -64,5 +69,9 @@ class User(
 
     fun checkPassword(password: String): Boolean {
         return BCryptPasswordEncoder().matches(password, this.password)
+    }
+
+    fun changePassword(newPassword: String) {
+        this.password = BCryptPasswordEncoder().encode(newPassword)
     }
 }
