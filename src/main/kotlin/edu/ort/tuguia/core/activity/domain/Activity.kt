@@ -46,6 +46,7 @@ class Activity(
     @NotBlank(message = "La categoría es obligatoria")
     var categoryId: String
 
+    @Schema(readOnly = true)
     @Transient
     @JsonInclude(JsonInclude.Include.NON_NULL)
     var category: Category? = null

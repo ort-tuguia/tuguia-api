@@ -10,7 +10,8 @@ class Register(
     lastName: String,
     email: String,
     password: String,
-    isGuide: Boolean
+    isGuide: Boolean,
+    guideIdentification: String?
 ) {
     @NotBlank(message = "El username es obligatorio")
     val username: String
@@ -31,6 +32,8 @@ class Register(
         @JsonProperty("isGuide")
         get
 
+    val guideIdentification: String?
+
     init {
         this.username = username.lowercase()
         this.firstName = firstName
@@ -38,5 +41,6 @@ class Register(
         this.email = email
         this.password = password
         this.isGuide = isGuide
+        this.guideIdentification = guideIdentification
     }
 }

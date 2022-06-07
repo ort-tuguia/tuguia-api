@@ -1,16 +1,19 @@
 package edu.ort.tuguia.core.phone.domain
 
 import com.fasterxml.jackson.annotation.JsonInclude
+import edu.ort.tuguia.core.user.domain.User
 import io.swagger.v3.oas.annotations.media.Schema
 import java.time.LocalDateTime
-import javax.persistence.Entity
-import javax.persistence.Id
-import javax.persistence.Table
+import javax.persistence.*
 import javax.validation.constraints.NotBlank
 
 @Entity
 @Table(name = "phones")
-class Phone(id: String = "", number: String = "", description: String = "", username: String = "") {
+class Phone(
+    id: String = "",
+    number: String = "",
+    description: String = "",
+    user: User? = null) {
     @Schema(readOnly = true)
     @Id
     var id: String
@@ -21,11 +24,12 @@ class Phone(id: String = "", number: String = "", description: String = "", user
     @NotBlank(message = "La descripcion es obligatoria")
     var description: String
 
-    @NotBlank(message = "El usuario es obligatorio")
-    var username: String
+    @ManyToOne
+    @JoinColumn(name = "username", nullable =  false)
+    private var user: User?
 
     @Schema(readOnly = true)
-    lateinit var createdAt: LocalDateTime
+    var createdAt: LocalDateTime
 
     @Schema(readOnly = true)
     @JsonInclude(JsonInclude.Include.NON_NULL)
@@ -35,6 +39,7 @@ class Phone(id: String = "", number: String = "", description: String = "", user
         this.id = id
         this.number = number
         this.description = description
-        this.username = username
+        this.user = user
+        this.createdAt = LocalDateTime.now()
     }
 }
