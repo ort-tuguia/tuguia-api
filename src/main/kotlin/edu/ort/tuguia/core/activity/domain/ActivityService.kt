@@ -9,12 +9,13 @@ import java.time.LocalDateTime
 import java.util.*
 
 interface ActivityService {
-    fun createActivity(activity: Activity): Activity
+    fun createActivity(username: String, activity: Activity): Activity
     fun getActivityById(id: String): Activity
     fun getAllActivities(): List<Activity>
+    fun getMyActivities(username: String): List<Activity>
     fun getActivitiesByCategories(categoriesIds: List<String>): List<Activity>
-    fun updateActivity(activity: Activity): Activity
-    fun deleteActivityById(id: String): Activity
+    fun updateActivity(username: String, activity: Activity): Activity
+    fun deleteActivityById(username: String, id: String): Activity
     fun getCloseActivities(searchOptions: ActivitySearchOptions): List<Activity>
 }
 
@@ -23,10 +24,12 @@ private const val MAX_RESULTS = 50
 @Service
 class ActivityServiceImpl(
     private val activityRepository: ActivityRepository,
-    private val categoryService: CategoryService) : ActivityService {
-    override fun createActivity(activity: Activity): Activity {
+    private val categoryService: CategoryService
+) : ActivityService {
+    override fun createActivity(username: String, activity: Activity): Activity {
         activity.id = UUID.randomUUID().toString()
         activity.category = this.categoryService.getCategoryById(activity.categoryId)
+        activity.guideUsername = username
         activity.createdAt = LocalDateTime.now()
 
         this.activityRepository.createActivity(activity)
@@ -47,12 +50,20 @@ class ActivityServiceImpl(
         return this.activityRepository.getAllActivities()
     }
 
+    override fun getMyActivities(username: String): List<Activity> {
+        return this.activityRepository.getActivitiesByUsername(username)
+    }
+
     override fun getActivitiesByCategories(categoriesIds: List<String>): List<Activity> {
         return this.activityRepository.getActivitiesByCategories(categoriesIds)
     }
 
-    override fun updateActivity(activity: Activity): Activity {
+    override fun updateActivity(username: String, activity: Activity): Activity {
         val queryActivity = this.getActivityById(activity.id)
+
+        if (queryActivity.guideUsername != username) {
+            throw ApiException(HttpStatus.UNAUTHORIZED, "No es posible modificar la actividad ya que pertenece a otro usuario")
+        }
 
         queryActivity.name = activity.name
         queryActivity.description = activity.description
@@ -72,8 +83,12 @@ class ActivityServiceImpl(
         return queryActivity
     }
 
-    override fun deleteActivityById(id: String): Activity {
+    override fun deleteActivityById(username: String, id: String): Activity {
         val queryActivity = this.getActivityById(id)
+
+        if (queryActivity.guideUsername != username) {
+            throw ApiException(HttpStatus.UNAUTHORIZED, "No es posible eliminar la actividad ya que pertenece a otro usuario")
+        }
 
         this.activityRepository.deleteActivity(queryActivity)
 

@@ -35,10 +35,18 @@ class ActivityPostgressRepository : ActivityRepository {
         return em.createQuery(select).resultList
     }
 
+    override fun getActivitiesByUsername(username: String): List<Activity> {
+        val query = em.criteriaBuilder.createQuery(Activity::class.java)
+        val from = query.from(Activity::class.java)
+        val select = query.select(from).where(em.criteriaBuilder.equal(from.get<Activity>("guideUsername"), username))
+
+        return em.createQuery(select).resultList
+    }
+
     override fun getActivitiesByCategories(categoriesIds: List<String>): List<Activity> {
         val query = em.criteriaBuilder.createQuery(Activity::class.java)
         val from = query.from(Activity::class.java)
-        val select = query.select(from).where(from.get<Boolean?>("categoryId").`in`(categoriesIds))
+        val select = query.select(from).where(from.get<Activity>("categoryId").`in`(categoriesIds))
 
         return em.createQuery(select).resultList
     }

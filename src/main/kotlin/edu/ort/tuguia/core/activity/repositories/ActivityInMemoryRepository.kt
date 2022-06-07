@@ -26,14 +26,16 @@ class ActivityInMemoryRepository : ActivityRepository {
         return ArrayList(activities.values)
     }
 
-    override fun getActivitiesByCategories(categoriesIds: List<String>): List<Activity> {
-        val activities = ArrayList(activities.values)
-        activities.forEach {
-            if (!categoriesIds.contains(it.categoryId)) {
-                activities.remove(it)
-            }
+    override fun getActivitiesByUsername(username: String): List<Activity> {
+        return ArrayList(activities.values).filter {
+            it.guideUsername == username
         }
-        return activities
+    }
+
+    override fun getActivitiesByCategories(categoriesIds: List<String>): List<Activity> {
+        return ArrayList(activities.values).filter {
+            !categoriesIds.contains(it.categoryId)
+        }
     }
 
     override fun deleteActivity(activity: Activity) {
