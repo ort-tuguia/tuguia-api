@@ -54,6 +54,16 @@ class ActivityOrionRepository(val orionClient: OrionClient) : ActivityRepository
         }
     }
 
+    override fun getActivitiesByUsername(username: String): List<Activity> {
+        val orionActivities = orionClient.getAllEntities(entityType, OrionActivity::class.java, listOf(
+            "guideUsername:$username"
+        ))
+
+        return orionActivities.map {
+            it.toActivity()
+        }
+    }
+
     override fun getActivitiesByCategories(categoriesIds: List<String>): List<Activity> {
         val categories = categoriesIds.joinToString(separator = ",")
         val orionActivities = orionClient.getAllEntities(entityType, OrionActivity::class.java, listOf(
