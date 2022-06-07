@@ -23,7 +23,7 @@ This project use a PostgreSQL Database.
 
 To initialize local PostgreSQL Database with Docker execute:
 ```bash
-docker-compose -f docker-compose.yml up -d
+docker-compose up -d
 ```
 
 So to initialize the project locally, the following environment variables need to be set:
