@@ -1,5 +1,6 @@
 package edu.ort.tuguia.core.user.domain
 
+import edu.ort.tuguia.core.phone.domain.Phone
 import edu.ort.tuguia.tools.auth.JwtAuth
 import io.swagger.v3.oas.annotations.Operation
 import io.swagger.v3.oas.annotations.Parameter
@@ -10,9 +11,9 @@ import javax.servlet.http.HttpServletRequest
 import javax.servlet.http.HttpServletResponse
 import javax.validation.Valid
 
-@Tag(name = "Users")
+@Tag(name = "User")
 @RestController
-@RequestMapping("/api/users")
+@RequestMapping("/api/user")
 class UserController(private val userService: UserService) {
     @Operation(summary = "Register")
     @PostMapping("/register")
@@ -40,22 +41,44 @@ class UserController(private val userService: UserService) {
         JwtAuth.clearToken(response)
     }
 
-    @Operation(summary = "Get User Details")
-    @GetMapping("/details")
+    @Operation(summary = "Get User Account Details")
+    @GetMapping
     @ResponseStatus(HttpStatus.OK)
-    fun getUserDetails(request: HttpServletRequest): User? {
+    fun getUserAccount(request: HttpServletRequest): User? {
         val username = JwtAuth.getUsernameFromRequest(request)
         return this.userService.getUserByUsername(username)
     }
 
-    @Operation(summary = "Add User Favorite Categories")
-    @PostMapping("/categories")
+    @Operation(summary = "Edit User Account Details")
+    @PutMapping
     @ResponseStatus(HttpStatus.OK)
-    fun addUserFavCategories(
+    fun editUserDetails(
+        request: HttpServletRequest,
+        @RequestBody @Parameter(description = "User Details") userDetails: EditUser
+    ): User {
+        val username = JwtAuth.getUsernameFromRequest(request)
+        return this.userService.editUserDetails(username, userDetails)
+    }
+
+    @Operation(summary = "Edit User Phones")
+    @PutMapping("/phones")
+    @ResponseStatus(HttpStatus.OK)
+    fun editUserPhones(
+        request: HttpServletRequest,
+        @RequestBody @Parameter(description = "Phones") phones: List<Phone>
+    ): User {
+        val username = JwtAuth.getUsernameFromRequest(request)
+        return this.userService.editUserPhones(username, phones)
+    }
+
+    @Operation(summary = "Edit User Favorite Categories")
+    @PutMapping("/categories")
+    @ResponseStatus(HttpStatus.OK)
+    fun editUserFavCategories(
         request: HttpServletRequest,
         @RequestBody @Parameter(description = "Categories ID's") categoriesIds: List<String>
     ): User {
         val username = JwtAuth.getUsernameFromRequest(request)
-        return this.userService.addUserFavCategories(username, categoriesIds)
+        return this.userService.editUserFavCategories(username, categoriesIds)
     }
 }
