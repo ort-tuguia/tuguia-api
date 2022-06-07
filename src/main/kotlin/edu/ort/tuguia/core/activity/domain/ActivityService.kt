@@ -9,7 +9,7 @@ import java.time.LocalDateTime
 import java.util.*
 
 interface ActivityService {
-    fun createActivity(activity: Activity): Activity
+    fun createActivity(username: String, activity: Activity): Activity
     fun getActivityById(id: String): Activity
     fun getAllActivities(): List<Activity>
     fun getActivitiesByCategories(categoriesIds: List<String>): List<Activity>
@@ -23,10 +23,12 @@ private const val MAX_RESULTS = 50
 @Service
 class ActivityServiceImpl(
     private val activityRepository: ActivityRepository,
-    private val categoryService: CategoryService) : ActivityService {
-    override fun createActivity(activity: Activity): Activity {
+    private val categoryService: CategoryService
+) : ActivityService {
+    override fun createActivity(username: String, activity: Activity): Activity {
         activity.id = UUID.randomUUID().toString()
         activity.category = this.categoryService.getCategoryById(activity.categoryId)
+        activity.guideUsername = username
         activity.createdAt = LocalDateTime.now()
 
         this.activityRepository.createActivity(activity)
