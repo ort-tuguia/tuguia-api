@@ -51,7 +51,7 @@ class Activity(
     @JsonInclude(JsonInclude.Include.NON_NULL)
     var category: Category? = null
 
-    @NotBlank(message = "El guia es obligatorio")
+    @Schema(readOnly = true)
     var guideUsername: String
 
     @Schema(readOnly = true)
