@@ -1,4 +1,4 @@
-package edu.ort.tuguia.core.user.domain
+package edu.ort.tuguia.core.user.application
 
 import javax.validation.constraints.Email
 import javax.validation.constraints.NotBlank
@@ -7,7 +7,6 @@ class EditUser(
     firstName: String,
     lastName: String,
     email: String,
-    newPassword: String
 ) {
     @NotBlank(message = "El nombre es obligatorio")
     val firstName: String
@@ -18,17 +17,9 @@ class EditUser(
     @Email(message = "Se debe ingresar un email valido")
     val email: String
 
-    @NotBlank(message = "El password es obligatorio")
-    private val newPassword: String
-
     init {
         this.firstName = firstName
         this.lastName = lastName
         this.email = email
-        this.newPassword = newPassword
-    }
-
-    fun getNewPassword(): String {
-        return this.newPassword
     }
 }

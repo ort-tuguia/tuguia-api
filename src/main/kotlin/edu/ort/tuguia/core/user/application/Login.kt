@@ -1,4 +1,4 @@
-package edu.ort.tuguia.core.user.domain
+package edu.ort.tuguia.core.user.application
 
 import javax.validation.constraints.NotBlank
 
