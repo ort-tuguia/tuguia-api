@@ -10,6 +10,8 @@ class OrionActivity(
     val description: OrionEntity.Attr<String>,
     val location: OrionEntity.Attr<String>,
     val price: OrionEntity.Attr<Double>,
+    val categoryId: OrionEntity.Attr<String>,
+    val photos: OrionEntity.Attr<List<ActivityPhoto>>,
     val guideUsername: OrionEntity.Attr<String>,
     val createdAt: OrionEntity.Attr<LocalDateTime>,
     val updatedAt: OrionEntity.Attr<LocalDateTime>? = null
@@ -23,6 +25,8 @@ class OrionActivity(
         activity.locationLatitude = locations[0].toDouble()
         activity.locationLongitude = locations[1].toDouble()
         activity.price = price.value
+        activity.categoryId = categoryId.value
+        activity.photos = photos.value.toMutableList()
         activity.guideUsername = guideUsername.value
         activity.createdAt = createdAt.value
         if (updatedAt != null) {
