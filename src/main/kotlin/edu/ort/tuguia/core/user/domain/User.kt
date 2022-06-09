@@ -46,7 +46,7 @@ class User(
 
     @ManyToMany
     @JoinTable(
-        name = "user_categories",
+        name = "users_categories",
         joinColumns = [JoinColumn(name = "username")],
         inverseJoinColumns = [JoinColumn(name = "category_id")])
     var favCategories: MutableList<Category>
