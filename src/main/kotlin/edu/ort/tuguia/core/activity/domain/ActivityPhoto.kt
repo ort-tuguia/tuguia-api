@@ -22,6 +22,7 @@ class ActivityPhoto(
     @URL(message = "Se debe ingresar una URL valida")
     var photoUrl: String
 
+    @Schema(readOnly = true)
     @ManyToOne
     @JoinColumn(name = "activity_id", nullable = false)
     private var activity: Activity?
