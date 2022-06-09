@@ -13,7 +13,8 @@ class Phone(
     id: String = "",
     number: String = "",
     description: String = "",
-    user: User? = null) {
+    user: User? = null
+) {
     @Schema(readOnly = true)
     @Id
     var id: String
