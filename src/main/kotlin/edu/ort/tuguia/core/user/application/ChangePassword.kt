@@ -7,7 +7,7 @@ class ChangePassword (
     newPassword: String,
     confirmNewPassword: String
 ) {
-    @NotBlank(message = "La clave contraseña es obligatoria")
+    @NotBlank(message = "La contraseña actual es obligatoria")
     val currentPassword: String
 
     @NotBlank(message = "La nueva contraseña es obligatoria")
