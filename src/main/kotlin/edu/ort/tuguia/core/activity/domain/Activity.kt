@@ -4,9 +4,12 @@ import com.fasterxml.jackson.annotation.JsonInclude
 import edu.ort.tuguia.core.category.domain.Category
 import io.swagger.v3.oas.annotations.media.Schema
 import java.time.LocalDateTime
+import javax.persistence.CascadeType
 import javax.persistence.Entity
 import javax.persistence.Id
+import javax.persistence.OneToMany
 import javax.persistence.Table
+import javax.validation.Valid
 import javax.validation.constraints.Min
 import javax.validation.constraints.NotBlank
 
@@ -20,6 +23,7 @@ class Activity(
     locationLongitude: Double = 0.0,
     price: Double = 0.0,
     categoryId: String = "",
+    photos: MutableList<ActivityPhoto> = mutableListOf(),
     guideUsername: String = ""
 ) {
     @Schema(readOnly = true)
@@ -51,6 +55,10 @@ class Activity(
     @JsonInclude(JsonInclude.Include.NON_NULL)
     var category: Category? = null
 
+    @OneToMany(mappedBy = "activity", cascade = [CascadeType.ALL], orphanRemoval = true)
+    @Valid
+    var photos: MutableList<ActivityPhoto>
+
     @Schema(readOnly = true)
     var guideUsername: String
 
@@ -69,6 +77,7 @@ class Activity(
         this.locationLongitude = locationLongitude
         this.price = price
         this.categoryId = categoryId
+        this.photos = photos
         this.guideUsername = guideUsername
     }
 }
