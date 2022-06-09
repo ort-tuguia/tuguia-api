@@ -1,6 +1,11 @@
 package edu.ort.tuguia.core.user.domain
 
 import edu.ort.tuguia.core.phone.domain.Phone
+import edu.ort.tuguia.core.shared.Photo
+import edu.ort.tuguia.core.user.application.ChangePassword
+import edu.ort.tuguia.core.user.application.EditUser
+import edu.ort.tuguia.core.user.application.Login
+import edu.ort.tuguia.core.user.application.Register
 import edu.ort.tuguia.tools.auth.JwtAuth
 import io.swagger.v3.oas.annotations.Operation
 import io.swagger.v3.oas.annotations.Parameter
@@ -49,15 +54,37 @@ class UserController(private val userService: UserService) {
         return this.userService.getUserByUsername(username)
     }
 
+    @Operation(summary = "Change User Password")
+    @PutMapping("/password")
+    @ResponseStatus(HttpStatus.OK)
+    fun editUserPassword(
+        request: HttpServletRequest,
+        @RequestBody @Valid @Parameter(description = "Change Password") changePassword: ChangePassword
+    ): User {
+        val username = JwtAuth.getUsernameFromRequest(request)
+        return this.userService.editUserPassword(username, changePassword)
+    }
+
     @Operation(summary = "Edit User Account Details")
     @PutMapping
     @ResponseStatus(HttpStatus.OK)
     fun editUserDetails(
         request: HttpServletRequest,
-        @RequestBody @Parameter(description = "User Details") userDetails: EditUser
+        @RequestBody @Valid @Parameter(description = "User Details") userDetails: EditUser
     ): User {
         val username = JwtAuth.getUsernameFromRequest(request)
         return this.userService.editUserDetails(username, userDetails)
+    }
+
+    @Operation(summary = "Edit User Account Photo")
+    @PutMapping("/photo")
+    @ResponseStatus(HttpStatus.OK)
+    fun editUserPhoto(
+        request: HttpServletRequest,
+        @RequestBody @Valid @Parameter(description = "Photo") photo: Photo
+    ): User {
+        val username = JwtAuth.getUsernameFromRequest(request)
+        return this.userService.editUserPhoto(username, photo.photoUrl)
     }
 
     @Operation(summary = "Edit User Phones")
@@ -65,7 +92,7 @@ class UserController(private val userService: UserService) {
     @ResponseStatus(HttpStatus.OK)
     fun editUserPhones(
         request: HttpServletRequest,
-        @RequestBody @Parameter(description = "Phones") phones: List<Phone>
+        @RequestBody @Valid @Parameter(description = "Phones") phones: List<Phone>
     ): User {
         val username = JwtAuth.getUsernameFromRequest(request)
         return this.userService.editUserPhones(username, phones)
@@ -76,7 +103,7 @@ class UserController(private val userService: UserService) {
     @ResponseStatus(HttpStatus.OK)
     fun editUserFavCategories(
         request: HttpServletRequest,
-        @RequestBody @Parameter(description = "Categories ID's") categoriesIds: List<String>
+        @RequestBody @Valid @Parameter(description = "Categories ID's") categoriesIds: List<String>
     ): User {
         val username = JwtAuth.getUsernameFromRequest(request)
         return this.userService.editUserFavCategories(username, categoriesIds)
