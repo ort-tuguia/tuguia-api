@@ -51,6 +51,9 @@ class User(
         inverseJoinColumns = [JoinColumn(name = "category_id")])
     var favCategories: MutableList<Category>
 
+    @JsonInclude(JsonInclude.Include.NON_NULL)
+    var photoUrl: String? = null
+
     init {
         this.username = username
         this.firstName = firstName
