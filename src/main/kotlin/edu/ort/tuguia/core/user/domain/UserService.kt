@@ -1,7 +1,6 @@
 package edu.ort.tuguia.core.user.domain
 
 import edu.ort.tuguia.core.category.domain.CategoryService
-import edu.ort.tuguia.core.phone.domain.Phone
 import edu.ort.tuguia.core.user.application.ChangePassword
 import edu.ort.tuguia.core.user.application.EditUser
 import edu.ort.tuguia.core.user.application.Login
@@ -19,7 +18,7 @@ interface UserService {
     fun editUserPassword(username: String, changePassword: ChangePassword): User
     fun editUserDetails(username: String, userDetails: EditUser): User
     fun editUserPhoto(username: String, photoUrl: String): User
-    fun editUserPhones(username: String, phones: List<Phone>): User
+    fun editUserPhones(username: String, phones: List<UserPhone>): User
     fun editUserFavCategories(username: String, categoriesIds: List<String>): User
 }
 
@@ -109,14 +108,14 @@ class UserServiceImpl(
         return user
     }
 
-    override fun editUserPhones(username: String, phones: List<Phone>): User {
+    override fun editUserPhones(username: String, phones: List<UserPhone>): User {
         val user = this.getUserByUsername(username)
 
         // TODO: Add logic to add new phones, update equal phones with numbers and delete
         user.phones.clear()
         phones.forEach {
             user.phones.add(
-                Phone(
+                UserPhone(
                     UUID.randomUUID().toString(),
                     it.number,
                     it.description,
