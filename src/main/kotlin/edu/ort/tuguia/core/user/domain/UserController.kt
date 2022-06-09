@@ -1,6 +1,5 @@
 package edu.ort.tuguia.core.user.domain
 
-import edu.ort.tuguia.core.phone.domain.Phone
 import edu.ort.tuguia.core.shared.Photo
 import edu.ort.tuguia.core.user.application.ChangePassword
 import edu.ort.tuguia.core.user.application.EditUser
@@ -92,7 +91,7 @@ class UserController(private val userService: UserService) {
     @ResponseStatus(HttpStatus.OK)
     fun editUserPhones(
         request: HttpServletRequest,
-        @RequestBody @Valid @Parameter(description = "Phones") phones: List<Phone>
+        @RequestBody @Valid @Parameter(description = "Phones") phones: List<UserPhone>
     ): User {
         val username = JwtAuth.getUsernameFromRequest(request)
         return this.userService.editUserPhones(username, phones)
