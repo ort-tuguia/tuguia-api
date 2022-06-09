@@ -32,6 +32,11 @@ class ActivityServiceImpl(
         activity.guideUsername = username
         activity.createdAt = LocalDateTime.now()
 
+        activity.photos.forEach {
+            it.id = UUID.randomUUID().toString()
+            it.setActivity(activity)
+        }
+
         this.activityRepository.createActivity(activity)
 
         return activity
@@ -74,6 +79,19 @@ class ActivityServiceImpl(
         if (queryActivity.categoryId != activity.categoryId) {
             queryActivity.categoryId = activity.categoryId
             queryActivity.category = this.categoryService.getCategoryById(activity.categoryId)
+        }
+
+        if (activity.photos.isNotEmpty()) {
+            queryActivity.photos.clear()
+            activity.photos.forEach {
+                queryActivity.photos.add(
+                    ActivityPhoto(
+                        UUID.randomUUID().toString(),
+                        it.photoUrl,
+                        queryActivity
+                    )
+                )
+            }
         }
 
         queryActivity.updatedAt = LocalDateTime.now()
