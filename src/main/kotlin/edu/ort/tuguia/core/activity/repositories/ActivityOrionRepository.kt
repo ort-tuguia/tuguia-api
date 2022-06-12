@@ -9,7 +9,7 @@ import org.springframework.context.annotation.Profile
 import org.springframework.stereotype.Repository
 
 @Repository
-@Profile("default")
+@Profile("orion")
 class ActivityOrionRepository(val orionClient: OrionClient) : ActivityRepository {
     val entityType = "Activity"
     val typePhoto = "Photo"

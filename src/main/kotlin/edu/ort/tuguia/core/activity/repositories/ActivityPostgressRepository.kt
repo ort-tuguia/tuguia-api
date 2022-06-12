@@ -10,7 +10,7 @@ import javax.transaction.Transactional
 
 @Repository
 @Transactional
-@Profile("production")
+@Profile("production|default")
 class ActivityPostgressRepository : ActivityRepository {
     @PersistenceContext
     private lateinit var em: EntityManager
