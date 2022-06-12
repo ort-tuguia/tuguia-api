@@ -1,5 +1,7 @@
 package edu.ort.tuguia.core.user.domain
 
+import edu.ort.tuguia.core.activity.domain.Activity
+import edu.ort.tuguia.core.activity.domain.ActivityService
 import edu.ort.tuguia.core.category.domain.CategoryService
 import edu.ort.tuguia.core.user.application.ChangePassword
 import edu.ort.tuguia.core.user.application.EditUser
@@ -22,12 +24,15 @@ interface UserService {
     fun editUserPhoto(username: String, photoUrl: String): User
     fun editUserPhones(username: String, phones: List<UserPhone>): User
     fun editUserFavCategories(username: String, categoriesIds: List<String>): User
+    fun addUserFavActivity(username: String, activityId: String): List<Activity>
+    fun removeUserFavActivity(username: String, activityId: String): List<Activity>
 }
 
 @Service
 class UserServiceImpl(
     private val userRepository: UserRepository,
-    private val categoryService: CategoryService
+    private val categoryService: CategoryService,
+    private val activityService: ActivityService,
 ) : UserService {
     override fun saveUser(user: User): User? {
         this.userRepository.saveUser(user)
@@ -153,5 +158,41 @@ class UserServiceImpl(
         this.saveUser(user)
 
         return user
+    }
+
+    override fun addUserFavActivity(username: String, activityId: String): List<Activity> {
+        val user = this.getUserByUsername(username)
+
+        val activitiesIds = user.favActivities.map { it.id }
+
+        if (activitiesIds.contains(activityId)) {
+            throw ApiException(HttpStatus.BAD_REQUEST, "La actividad ya fue agregada como favorita")
+        }
+
+        val activity = this.activityService.getActivityById(activityId)
+
+        user.favActivities.add(activity)
+
+        this.saveUser(user)
+
+        return user.favActivities
+    }
+
+    override fun removeUserFavActivity(username: String, activityId: String): List<Activity> {
+        val user = this.getUserByUsername(username)
+
+        val activitiesIds = user.favActivities.map { it.id }
+
+        if (!activitiesIds.contains(activityId)) {
+            throw ApiException(HttpStatus.BAD_REQUEST, "La actividad ya fue removida como favorita")
+        }
+
+        val activity = this.activityService.getActivityById(activityId)
+
+        user.favActivities.remove(activity)
+
+        this.saveUser(user)
+
+        return user.favActivities
     }
 }
