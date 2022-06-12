@@ -9,7 +9,9 @@ import org.springframework.web.servlet.config.annotation.WebMvcConfigurer
 @Configuration
 class WebConfig : WebMvcConfigurer {
     override fun addCorsMappings(registry: CorsRegistry) {
-        registry.addMapping("/**").allowedOrigins("*")
+        registry.addMapping("/**")
+            .allowedOrigins("*")
+            .exposedHeaders("Authorization")
     }
 
     override fun addInterceptors(registry: InterceptorRegistry) {
