@@ -1,5 +1,6 @@
 package edu.ort.tuguia.core.user.domain
 
+import edu.ort.tuguia.core.activity.domain.Activity
 import edu.ort.tuguia.core.shared.Photo
 import edu.ort.tuguia.core.user.application.ChangePassword
 import edu.ort.tuguia.core.user.application.EditUser
@@ -98,7 +99,7 @@ class UserController(private val userService: UserService) {
     }
 
     @Operation(summary = "Edit User Favorite Categories")
-    @PutMapping("/categories")
+    @PutMapping("/fav/categories")
     @ResponseStatus(HttpStatus.OK)
     fun editUserFavCategories(
         request: HttpServletRequest,
@@ -106,5 +107,27 @@ class UserController(private val userService: UserService) {
     ): User {
         val loggedUser = JwtAuth.getUserFromRequest(request)
         return this.userService.editUserFavCategories(loggedUser.username, categoriesIds)
+    }
+
+    @Operation(summary = "Add User Favorite Activity")
+    @PostMapping("/fav/activities/{activityId}")
+    @ResponseStatus(HttpStatus.CREATED)
+    fun addUserFavActivity(
+        request: HttpServletRequest,
+        @PathVariable @Parameter(description = "Activity ID") activityId: String
+    ): List<Activity> {
+        val loggedUser = JwtAuth.getUserFromRequest(request)
+        return this.userService.addUserFavActivity(loggedUser.username, activityId)
+    }
+
+    @Operation(summary = "Remove User Favorite Activity")
+    @DeleteMapping("/fav/activities/{activityId}")
+    @ResponseStatus(HttpStatus.OK)
+    fun removeUserFavActivity(
+        request: HttpServletRequest,
+        @PathVariable @Parameter(description = "Activity ID") activityId: String
+    ): List<Activity> {
+        val loggedUser = JwtAuth.getUserFromRequest(request)
+        return this.userService.removeUserFavActivity(loggedUser.username, activityId)
     }
 }
