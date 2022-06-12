@@ -34,7 +34,7 @@ class UserController(private val userService: UserService) {
         response: HttpServletResponse
     ): User? {
         val user = this.userService.loginUser(login)
-        JwtAuth.initializeToken(user.username, response)
+        JwtAuth.initializeToken(user.username, user.role.toString(), response)
         return this.userService.loginUser(login)
     }
 
@@ -49,8 +49,8 @@ class UserController(private val userService: UserService) {
     @GetMapping
     @ResponseStatus(HttpStatus.OK)
     fun getUserAccount(request: HttpServletRequest): User? {
-        val username = JwtAuth.getUsernameFromRequest(request)
-        return this.userService.getUserByUsername(username)
+        val loggedUser = JwtAuth.getUserFromRequest(request)
+        return this.userService.getUserByUsername(loggedUser.username)
     }
 
     @Operation(summary = "Change User Password")
@@ -60,8 +60,8 @@ class UserController(private val userService: UserService) {
         request: HttpServletRequest,
         @RequestBody @Valid @Parameter(description = "Change Password") changePassword: ChangePassword
     ): User {
-        val username = JwtAuth.getUsernameFromRequest(request)
-        return this.userService.editUserPassword(username, changePassword)
+        val loggedUser = JwtAuth.getUserFromRequest(request)
+        return this.userService.editUserPassword(loggedUser.username, changePassword)
     }
 
     @Operation(summary = "Edit User Account Details")
@@ -71,8 +71,8 @@ class UserController(private val userService: UserService) {
         request: HttpServletRequest,
         @RequestBody @Valid @Parameter(description = "User Details") userDetails: EditUser
     ): User {
-        val username = JwtAuth.getUsernameFromRequest(request)
-        return this.userService.editUserDetails(username, userDetails)
+        val loggedUser = JwtAuth.getUserFromRequest(request)
+        return this.userService.editUserDetails(loggedUser.username, userDetails)
     }
 
     @Operation(summary = "Edit User Account Photo")
@@ -82,8 +82,8 @@ class UserController(private val userService: UserService) {
         request: HttpServletRequest,
         @RequestBody @Valid @Parameter(description = "Photo") photo: Photo
     ): User {
-        val username = JwtAuth.getUsernameFromRequest(request)
-        return this.userService.editUserPhoto(username, photo.photoUrl)
+        val loggedUser = JwtAuth.getUserFromRequest(request)
+        return this.userService.editUserPhoto(loggedUser.username, photo.photoUrl)
     }
 
     @Operation(summary = "Edit User Phones")
@@ -93,8 +93,8 @@ class UserController(private val userService: UserService) {
         request: HttpServletRequest,
         @RequestBody @Valid @Parameter(description = "Phones") phones: List<UserPhone>
     ): User {
-        val username = JwtAuth.getUsernameFromRequest(request)
-        return this.userService.editUserPhones(username, phones)
+        val loggedUser = JwtAuth.getUserFromRequest(request)
+        return this.userService.editUserPhones(loggedUser.username, phones)
     }
 
     @Operation(summary = "Edit User Favorite Categories")
@@ -104,7 +104,7 @@ class UserController(private val userService: UserService) {
         request: HttpServletRequest,
         @RequestBody @Valid @Parameter(description = "Categories ID's") categoriesIds: List<String>
     ): User {
-        val username = JwtAuth.getUsernameFromRequest(request)
-        return this.userService.editUserFavCategories(username, categoriesIds)
+        val loggedUser = JwtAuth.getUserFromRequest(request)
+        return this.userService.editUserFavCategories(loggedUser.username, categoriesIds)
     }
 }
