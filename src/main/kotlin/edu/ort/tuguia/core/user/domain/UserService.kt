@@ -13,6 +13,8 @@ import java.util.*
 interface UserService {
     fun saveUser(user: User): User?
     fun getUserByUsername(username: String): User
+    fun getAllUsers(): List<User>
+    fun deleteUserByUsername(username: String)
     fun registerUser(register: Register): User?
     fun loginUser(login: Login): User
     fun editUserPassword(username: String, changePassword: ChangePassword): User
@@ -35,6 +37,16 @@ class UserServiceImpl(
     override fun getUserByUsername(username: String): User {
         return this.userRepository.getUserByUsername(username)
             ?: throw ApiException(HttpStatus.NOT_FOUND, "El usuario $username no existe")
+    }
+
+    override fun getAllUsers(): List<User> {
+        return this.userRepository.getAllUsers()
+    }
+
+    override fun deleteUserByUsername(username: String) {
+        val user = this.getUserByUsername(username)
+
+        this.userRepository.deleteUser(user)
     }
 
     override fun registerUser(register: Register): User? {

@@ -17,4 +17,12 @@ class UserInMemoryRepository : UserRepository {
     override fun getUserByUsername(username: String): User? {
         return users[username]
     }
+
+    override fun getAllUsers(): List<User> {
+        return ArrayList(users.values)
+    }
+
+    override fun deleteUser(user: User) {
+        users.remove(user.username)
+    }
 }

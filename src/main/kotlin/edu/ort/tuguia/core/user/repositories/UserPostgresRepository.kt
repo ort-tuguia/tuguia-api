@@ -22,4 +22,16 @@ class UserPostgresRepository : UserRepository {
     override fun getUserByUsername(username: String): User? {
         return em.find(User::class.java, username)
     }
+
+    override fun getAllUsers(): List<User> {
+        val query = em.criteriaBuilder.createQuery(User::class.java)
+        val from = query.from(User::class.java)
+        val select = query.select(from).orderBy(em.criteriaBuilder.asc(from.get<User>("username")))
+
+        return em.createQuery(select).resultList
+    }
+
+    override fun deleteUser(user: User) {
+        em.remove(user)
+    }
 }
