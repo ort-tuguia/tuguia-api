@@ -1,6 +1,7 @@
 package edu.ort.tuguia.core.user.domain
 
 import com.fasterxml.jackson.annotation.JsonInclude
+import edu.ort.tuguia.core.activity.domain.Activity
 import edu.ort.tuguia.core.category.domain.Category
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder
 import javax.persistence.*
@@ -53,6 +54,13 @@ class User(
     @JsonInclude(JsonInclude.Include.NON_NULL)
     var photoUrl: String? = null
 
+    @ManyToMany
+    @JoinTable(
+        name = "user_fav_activities",
+        joinColumns = [JoinColumn(name = "username")],
+        inverseJoinColumns = [JoinColumn(name = "activity_id")])
+    var favActivities: MutableList<Activity>
+
     init {
         this.username = username
         this.firstName = firstName
@@ -67,6 +75,7 @@ class User(
             this.guideIdentification = guideIdentification
         }
         this.favCategories = mutableListOf()
+        this.favActivities = mutableListOf()
     }
 
     fun checkPassword(password: String): Boolean {
