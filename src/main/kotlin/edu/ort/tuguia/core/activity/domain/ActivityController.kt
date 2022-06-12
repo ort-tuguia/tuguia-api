@@ -20,8 +20,8 @@ class ActivityController(private val activityService: ActivityService) {
         request: HttpServletRequest,
         @RequestBody @Valid @Parameter(description = "Activity") activity: Activity
     ): Activity? {
-        val username = JwtAuth.getUsernameFromRequest(request)
-        return this.activityService.createActivity(username, activity)
+        val loggedUser = JwtAuth.getUserFromRequest(request)
+        return this.activityService.createActivity(loggedUser.username, activity)
     }
 
     @Operation(summary = "Get activity by ID")
@@ -42,8 +42,8 @@ class ActivityController(private val activityService: ActivityService) {
     @GetMapping("/myself")
     @ResponseStatus(HttpStatus.OK)
     fun getMyActivities(request: HttpServletRequest): List<Activity> {
-        val username = JwtAuth.getUsernameFromRequest(request)
-        return this.activityService.getMyActivities(username)
+        val loggedUser = JwtAuth.getUserFromRequest(request)
+        return this.activityService.getMyActivities(loggedUser.username)
     }
 
     @Operation(summary = "Update an activity")
@@ -54,9 +54,9 @@ class ActivityController(private val activityService: ActivityService) {
         @PathVariable @Parameter(description = "ID of activity") id: String,
         @RequestBody @Valid @Parameter(description = "Activity") activity: Activity
     ): Activity? {
-        val username = JwtAuth.getUsernameFromRequest(request)
+        val loggedUser = JwtAuth.getUserFromRequest(request)
         activity.id = id
-        return this.activityService.updateActivity(username, activity)
+        return this.activityService.updateActivity(loggedUser.username, activity)
     }
 
     @Operation(summary = "Delete activity by ID")
@@ -66,8 +66,8 @@ class ActivityController(private val activityService: ActivityService) {
         request: HttpServletRequest,
         @PathVariable @Parameter(description = "ID of activity") id: String
     ): Activity? {
-        val username = JwtAuth.getUsernameFromRequest(request)
-        return this.activityService.deleteActivityById(username, id)
+        val loggedUser = JwtAuth.getUserFromRequest(request)
+        return this.activityService.deleteActivityById(loggedUser.username, id)
     }
 
     @Operation(summary = "Get close activities by location and filters")
