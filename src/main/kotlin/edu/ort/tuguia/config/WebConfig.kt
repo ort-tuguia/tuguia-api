@@ -11,7 +11,8 @@ import org.springframework.web.servlet.config.annotation.WebMvcConfigurer
 class WebConfig : WebMvcConfigurer {
     override fun addCorsMappings(registry: CorsRegistry) {
         registry.addMapping("/**")
-            .exposedHeaders("Authorization", "Access-Control-Allow-Headers")
+            .exposedHeaders("Authorization", "Access-Control-Allow-Headers", "Access-Control-Allow-Origin")
+            .exposedHeaders("*")
             .allowedOrigins("*")
             .allowedOriginPatterns("*")
             .allowedHeaders("*")
