@@ -12,10 +12,10 @@ class WebConfig : WebMvcConfigurer {
     override fun addCorsMappings(registry: CorsRegistry) {
         registry.addMapping("/**")
             .exposedHeaders("Authorization", "Access-Control-Allow-Headers", "Access-Control-Allow-Origin")
+            .allowedMethods("GET", "POST", "PUT", "PATCH", "DELETE", "OPTIONS")
+            .allowedHeaders("*")
             .allowedOrigins("*")
             .allowedOriginPatterns("*")
-            .allowedHeaders("*")
-            .allowedMethods("*")
     }
 
     override fun addInterceptors(registry: InterceptorRegistry) {
