@@ -12,7 +12,6 @@ class WebConfig : WebMvcConfigurer {
     override fun addCorsMappings(registry: CorsRegistry) {
         registry.addMapping("/**")
             .exposedHeaders("Authorization", "Access-Control-Allow-Headers", "Access-Control-Allow-Origin")
-            .exposedHeaders("*")
             .allowedOrigins("*")
             .allowedOriginPatterns("*")
             .allowedHeaders("*")
