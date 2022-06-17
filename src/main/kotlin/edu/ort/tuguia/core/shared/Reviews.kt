@@ -1,9 +1,10 @@
-package edu.ort.tuguia.core.activity.domain
+package edu.ort.tuguia.core.shared
 
-import javax.persistence.*
+import javax.persistence.Column
+import javax.persistence.Embeddable
 
 @Embeddable
-class ActivityReview(
+class Reviews(
     avgScore: Double = 0.0,
     reviews: Int = 0
 ) {
