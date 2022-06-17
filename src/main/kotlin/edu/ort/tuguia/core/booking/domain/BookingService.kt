@@ -19,6 +19,7 @@ interface BookingService {
     fun updateBooking(username: String, booking: Booking): Booking
     fun deleteBookingById(username: String, id: String): Booking
     fun addBookingReview(username: String, bookingId: String, review: CreateReview): Review
+    fun editBookingReview(username: String, bookingId: String, review: Review): Review
     fun getBookingReview(bookingId: String): Review
 }
 
@@ -79,21 +80,36 @@ class BookingServiceImpl(
         return queryBooking
     }
 
-    override fun getBookingReview(bookingId: String): Review {
-        // TODO: Validate username?
-        return this.reviewService.getReviewByBooking(bookingId)
-    }
-
     override fun addBookingReview(username: String, bookingId: String, review: CreateReview): Review {
         val user = this.userService.getUserByUsername(username)
         val booking = this.getBookingById(bookingId)
 
-        // TODO: Validate if booking review exists
+        if (booking.review != null) {
+            throw ApiException(HttpStatus.BAD_REQUEST, "Ya existe una reseña para la reserva actual")
+        }
 
         if (user.username != (booking.tourist?.username ?: "")) {
             throw ApiException(HttpStatus.UNAUTHORIZED, "La reseña solo puede ser realizada por el usuario que creó la reserva")
         }
 
         return this.reviewService.createReview(user.username, booking, review)
+    }
+
+    override fun editBookingReview(username: String, bookingId: String, review: Review): Review {
+        val user = this.userService.getUserByUsername(username)
+        val booking = this.getBookingById(bookingId)
+
+        if (booking.review == null) {
+            throw ApiException(HttpStatus.NOT_FOUND, "Aún no hay una reseña realizada para la reserva actual")
+        }
+
+        review.id = booking.review!!.id
+
+        return this.reviewService.updateReview(review)
+    }
+
+    override fun getBookingReview(bookingId: String): Review {
+        // TODO: Validate username?
+        return this.reviewService.getReviewByBooking(bookingId)
     }
 }
