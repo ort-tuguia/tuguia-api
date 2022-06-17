@@ -3,6 +3,7 @@ package edu.ort.tuguia.core.activity.domain
 import edu.ort.tuguia.core.category.domain.CategoryService
 import edu.ort.tuguia.core.review.domain.Review
 import edu.ort.tuguia.core.review.domain.ReviewService
+import edu.ort.tuguia.core.shared.Reviews
 import edu.ort.tuguia.tools.helpers.http.ApiException
 import edu.ort.tuguia.tools.utils.DistanceCalculator
 import org.springframework.http.HttpStatus
@@ -170,7 +171,7 @@ class ActivityServiceImpl(
             0.0
         }
 
-        activity.reviews = ActivityReview(avgScore, countReviews)
+        activity.reviews = Reviews(avgScore, countReviews)
 
         this.activityRepository.updateActivity(activity)
     }
