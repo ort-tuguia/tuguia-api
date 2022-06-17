@@ -6,6 +6,7 @@ import edu.ort.tuguia.core.review.domain.ReviewRepository
 import org.springframework.context.annotation.Profile
 import org.springframework.stereotype.Repository
 import javax.persistence.EntityManager
+import javax.persistence.NoResultException
 import javax.persistence.PersistenceContext
 import javax.persistence.criteria.Join
 import javax.transaction.Transactional
@@ -35,7 +36,11 @@ class ReviewPostgresRepository : ReviewRepository {
         val booking: Join<Review, Booking> = from.join("booking")
         val select = query.select(from).where(em.criteriaBuilder.equal(booking.get<Booking>("id"), bookingId))
 
-        return em.createQuery(select).singleResult
+        return try {
+            em.createQuery(select).singleResult
+        } catch (ex: NoResultException) {
+            null
+        }
     }
 
     override fun deleteReview(review: Review) {
