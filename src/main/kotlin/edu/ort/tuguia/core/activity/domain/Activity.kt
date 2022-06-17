@@ -2,6 +2,7 @@ package edu.ort.tuguia.core.activity.domain
 
 import com.fasterxml.jackson.annotation.JsonInclude
 import edu.ort.tuguia.core.category.domain.Category
+import edu.ort.tuguia.core.shared.Reviews
 import io.swagger.v3.oas.annotations.media.Schema
 import java.time.LocalDateTime
 import javax.persistence.CascadeType
@@ -65,7 +66,7 @@ class Activity(
 
     @Schema(readOnly = true)
     @Embedded
-    var reviews: ActivityReview? = null
+    var reviews: Reviews? = null
 
     @Schema(readOnly = true)
     lateinit var createdAt: LocalDateTime
