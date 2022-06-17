@@ -1,5 +1,6 @@
 package edu.ort.tuguia.core.activity.domain
 
+import edu.ort.tuguia.core.review.domain.Review
 import edu.ort.tuguia.tools.auth.JwtAuth
 import io.swagger.v3.oas.annotations.Operation
 import io.swagger.v3.oas.annotations.Parameter
@@ -79,5 +80,15 @@ class ActivityController(private val activityService: ActivityService) {
         @RequestBody @Valid @Parameter(name = "Search Options") searchOptions: ActivitySearchOptions
     ): List<Activity> {
         return this.activityService.getCloseActivities(searchOptions)
+    }
+
+    @Operation(summary = "Get activity reviews by activity ID")
+    @GetMapping("/{id}/reviews")
+    @ResponseStatus(HttpStatus.OK)
+    fun getActivityReviews(
+        request: HttpServletRequest,
+        @PathVariable @Parameter(description = "ID of activity") id: String
+    ): List<Review> {
+        return this.activityService.getActivityReviews(id)
     }
 }
