@@ -7,6 +7,7 @@ import edu.ort.tuguia.core.review.domain.ReviewService
 import edu.ort.tuguia.core.user.domain.UserRole
 import edu.ort.tuguia.core.user.domain.UserService
 import edu.ort.tuguia.tools.helpers.http.ApiException
+import org.springframework.context.ApplicationEventPublisher
 import org.springframework.http.HttpStatus
 import org.springframework.stereotype.Service
 import java.util.*
@@ -16,7 +17,6 @@ interface BookingService {
     fun getBookingById(id: String): Booking
     fun getAllBookings(): List<Booking>
     fun getMyBookings(username: String): List<Booking>
-    fun updateBooking(username: String, booking: Booking): Booking
     fun deleteBookingById(username: String, id: String): Booking
     fun addBookingReview(username: String, bookingId: String, review: CreateReview): Review
     fun editBookingReview(username: String, bookingId: String, review: Review): Review
@@ -26,6 +26,7 @@ interface BookingService {
 @Service
 class BookingServiceImpl(
     private val bookingRepository: BookingRepository,
+    private val eventPublisher: ApplicationEventPublisher,
     private val userService: UserService,
     private val activityService: ActivityService,
     private val reviewService: ReviewService
@@ -38,6 +39,8 @@ class BookingServiceImpl(
         )
 
         this.bookingRepository.createBooking(newBooking)
+
+        this.eventPublisher.publishEvent(BookingEvent(this, newBooking))
 
         return newBooking
     }
@@ -63,10 +66,6 @@ class BookingServiceImpl(
         }
     }
 
-    override fun updateBooking(username: String, booking: Booking): Booking {
-        TODO("Not yet implemented")
-    }
-
     override fun deleteBookingById(username: String, id: String): Booking {
         val queryBooking = this.getBookingById(id)
 
@@ -76,6 +75,8 @@ class BookingServiceImpl(
         }
 
         this.bookingRepository.deleteBooking(queryBooking)
+
+        this.eventPublisher.publishEvent(BookingEvent(this, queryBooking))
 
         return queryBooking
     }
