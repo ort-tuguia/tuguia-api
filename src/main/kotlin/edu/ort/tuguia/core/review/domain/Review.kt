@@ -1,5 +1,6 @@
 package edu.ort.tuguia.core.review.domain
 
+import com.fasterxml.jackson.annotation.JsonIgnore
 import com.fasterxml.jackson.annotation.JsonInclude
 import edu.ort.tuguia.core.booking.domain.Booking
 import io.swagger.v3.oas.annotations.media.Schema
@@ -34,7 +35,7 @@ class Review(
 
     @Schema(readOnly = true)
     @OneToOne
-    @JoinColumn(name = "booking_id", nullable = false)
+    @JoinColumn(name = "booking_id", referencedColumnName = "id", nullable = false)
     private var booking: Booking?
 
     @Schema(readOnly = true)
@@ -50,5 +51,10 @@ class Review(
         this.score = score
         this.booking = booking
         this.createdAt = LocalDateTime.now()
+    }
+
+    @JsonIgnore
+    fun getBookingId(): String {
+        return booking!!.id
     }
 }
