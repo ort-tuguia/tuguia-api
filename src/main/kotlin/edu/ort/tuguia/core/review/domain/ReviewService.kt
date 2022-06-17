@@ -3,6 +3,7 @@ package edu.ort.tuguia.core.review.domain
 import edu.ort.tuguia.core.booking.domain.Booking
 import edu.ort.tuguia.core.review.application.CreateReview
 import edu.ort.tuguia.tools.helpers.http.ApiException
+import org.springframework.context.ApplicationEventPublisher
 import org.springframework.http.HttpStatus
 import org.springframework.stereotype.Service
 import java.time.LocalDateTime
@@ -19,7 +20,8 @@ interface ReviewService {
 
 @Service
 class ReviewServiceImpl(
-    private val reviewRepository: ReviewRepository
+    private val reviewRepository: ReviewRepository,
+    private val eventPublisher: ApplicationEventPublisher
 ) : ReviewService {
     override fun createReview(username: String, booking: Booking, review: CreateReview): Review {
         val newReview = Review(
@@ -30,6 +32,8 @@ class ReviewServiceImpl(
         )
 
         this.reviewRepository.createReview(newReview)
+
+        this.eventPublisher.publishEvent(ReviewEvent(this, newReview))
 
         return newReview
     }
@@ -45,7 +49,7 @@ class ReviewServiceImpl(
     }
 
     override fun getReviewsByActivity(activityId: String): List<Review> {
-        TODO("Not yet implemented")
+        return this.reviewRepository.getReviewsByActivity(activityId)
     }
 
     override fun updateReview(review: Review): Review {
@@ -57,6 +61,9 @@ class ReviewServiceImpl(
 
         this.reviewRepository.updateReview(queryReview)
 
+        this.eventPublisher.publishEvent(ReviewEvent(this, queryReview))
+
+
         return queryReview
     }
 
@@ -64,6 +71,8 @@ class ReviewServiceImpl(
         val queryReview = this.getReviewById(id)
 
         this.reviewRepository.deleteReview(queryReview)
+
+        this.eventPublisher.publishEvent(ReviewEvent(this, queryReview))
 
         return queryReview
     }
