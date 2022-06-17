@@ -5,6 +5,7 @@ import edu.ort.tuguia.core.category.domain.Category
 import io.swagger.v3.oas.annotations.media.Schema
 import java.time.LocalDateTime
 import javax.persistence.CascadeType
+import javax.persistence.Embedded
 import javax.persistence.Entity
 import javax.persistence.Id
 import javax.persistence.OneToMany
@@ -61,6 +62,10 @@ class Activity(
 
     @Schema(readOnly = true)
     var guideUsername: String
+
+    @Schema(readOnly = true)
+    @Embedded
+    var reviews: ActivityReview? = null
 
     @Schema(readOnly = true)
     lateinit var createdAt: LocalDateTime
