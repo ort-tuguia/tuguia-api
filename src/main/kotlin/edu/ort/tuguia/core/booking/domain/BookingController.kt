@@ -36,13 +36,6 @@ class BookingController(private val bookingService: BookingService) {
         return this.bookingService.getBookingById(id)
     }
 
-    @Operation(summary = "Get all bookings")
-    @GetMapping
-    @ResponseStatus(HttpStatus.OK)
-    fun getAllBookings(): List<Booking> {
-        return this.bookingService.getAllBookings()
-    }
-
     @Operation(summary = "Get my bookings")
     @GetMapping("/myself")
     @ResponseStatus(HttpStatus.OK)

@@ -5,5 +5,6 @@ interface ReviewRepository {
     fun updateReview(review: Review)
     fun getReviewById(id: String): Review?
     fun getReviewByBooking(bookingId: String): Review?
+    fun getReviewsByActivity(activityId: String): List<Review>
     fun deleteReview(review: Review)
 }

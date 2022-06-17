@@ -1,6 +1,9 @@
 package edu.ort.tuguia.core.activity.domain
 
 import edu.ort.tuguia.core.category.domain.CategoryService
+import edu.ort.tuguia.core.review.domain.Review
+import edu.ort.tuguia.core.review.domain.ReviewService
+import edu.ort.tuguia.core.shared.Reviews
 import edu.ort.tuguia.tools.helpers.http.ApiException
 import edu.ort.tuguia.tools.utils.DistanceCalculator
 import org.springframework.http.HttpStatus
@@ -17,6 +20,8 @@ interface ActivityService {
     fun updateActivity(username: String, activity: Activity): Activity
     fun deleteActivityById(username: String, id: String): Activity
     fun getCloseActivities(searchOptions: ActivitySearchOptions): List<Activity>
+    fun getActivityReviews(activityId: String): List<Review>
+    fun asyncUpdateActivityReviews(activityId: String)
 }
 
 private const val MAX_RESULTS = 50
@@ -24,7 +29,8 @@ private const val MAX_RESULTS = 50
 @Service
 class ActivityServiceImpl(
     private val activityRepository: ActivityRepository,
-    private val categoryService: CategoryService
+    private val categoryService: CategoryService,
+    private val reviewService: ReviewService
 ) : ActivityService {
     override fun createActivity(username: String, activity: Activity): Activity {
         activity.id = UUID.randomUUID().toString()
@@ -141,5 +147,32 @@ class ActivityServiceImpl(
         }
 
         return closeActivities
+    }
+
+    override fun getActivityReviews(activityId: String): List<Review> {
+        return this.reviewService.getReviewsByActivity(activityId)
+    }
+
+    override fun asyncUpdateActivityReviews(activityId: String) {
+        val activity = this.getActivityById(activityId)
+        val reviews = this.reviewService.getReviewsByActivity(activity.id)
+
+        var countReviews = 0
+        var sumScore = 0.0
+
+        reviews.forEach {
+            countReviews++
+            sumScore += it.score
+        }
+
+        val avgScore: Double = if (countReviews != 0) {
+            sumScore/countReviews
+        } else {
+            0.0
+        }
+
+        activity.reviews = Reviews(avgScore, countReviews)
+
+        this.activityRepository.updateActivity(activity)
     }
 }

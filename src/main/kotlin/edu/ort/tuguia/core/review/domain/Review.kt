@@ -55,6 +55,10 @@ class Review(
 
     @JsonIgnore
     fun getBookingId(): String {
-        return booking!!.id
+        return booking?.id ?: ""
+    }
+
+    fun getActivityId(): String {
+        return booking?.activity?.id ?: ""
     }
 }

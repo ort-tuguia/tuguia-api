@@ -1,5 +1,6 @@
 package edu.ort.tuguia.core.booking.domain
 
+import com.fasterxml.jackson.annotation.JsonIgnore
 import edu.ort.tuguia.core.activity.domain.Activity
 import edu.ort.tuguia.core.review.domain.Review
 import edu.ort.tuguia.core.user.domain.User
@@ -42,5 +43,10 @@ class Booking(
         this.tourist = tourist
         this.activity = activity
         this.createdAt = LocalDateTime.now()
+    }
+
+    @JsonIgnore
+    fun getActivityId(): String {
+        return activity?.id ?: ""
     }
 }

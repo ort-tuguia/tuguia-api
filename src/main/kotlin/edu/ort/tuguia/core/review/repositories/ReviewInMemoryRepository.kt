@@ -23,11 +23,20 @@ class ReviewInMemoryRepository : ReviewRepository {
     }
 
     override fun getReviewByBooking(bookingId: String): Review? {
-        reviews.forEach { (_, u) ->
-            if (u.getBookingId() == bookingId) return u
+        reviews.forEach { (_, r) ->
+            if (r.getBookingId() == bookingId) return r
         }
 
         return null
+    }
+
+    override fun getReviewsByActivity(activityId: String): List<Review> {
+        val activityReviews = mutableListOf<Review>()
+        reviews.forEach {(_, r) ->
+            if (r.getActivityId() == activityId) activityReviews.add(r)
+        }
+
+        return activityReviews
     }
 
     override fun deleteReview(review: Review) {
