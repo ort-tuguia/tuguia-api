@@ -1,11 +1,14 @@
 package edu.ort.tuguia.core.review.repositories
 
+import edu.ort.tuguia.core.booking.domain.Booking
 import edu.ort.tuguia.core.review.domain.Review
 import edu.ort.tuguia.core.review.domain.ReviewRepository
 import org.springframework.context.annotation.Profile
 import org.springframework.stereotype.Repository
 import javax.persistence.EntityManager
+import javax.persistence.NoResultException
 import javax.persistence.PersistenceContext
+import javax.persistence.criteria.Join
 import javax.transaction.Transactional
 
 @Repository
@@ -15,27 +18,32 @@ class ReviewPostgresRepository : ReviewRepository {
     @PersistenceContext
     private lateinit var em: EntityManager
 
-    override fun saveReview(review: Review) {
+    override fun createReview(review: Review) {
+        em.persist(review)
+    }
 
+    override fun updateReview(review: Review) {
         em.persist(review)
     }
 
     override fun getReviewById(id: String): Review? {
-
         return em.find(Review::class.java, id)
     }
 
-    override fun getAllReviews(): List<Review> {
-
+    override fun getReviewByBooking(bookingId: String): Review? {
         val query = em.criteriaBuilder.createQuery(Review::class.java)
         val from = query.from(Review::class.java)
-        val select = query.select(from).orderBy(em.criteriaBuilder.asc(from.get<Review>("createdAt")))
+        val booking: Join<Review, Booking> = from.join("booking")
+        val select = query.select(from).where(em.criteriaBuilder.equal(booking.get<Booking>("id"), bookingId))
 
-        return em.createQuery(select).resultList
+        return try {
+            em.createQuery(select).singleResult
+        } catch (ex: NoResultException) {
+            null
+        }
     }
 
     override fun deleteReview(review: Review) {
-
         em.remove(review)
     }
 }

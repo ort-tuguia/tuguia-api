@@ -1,8 +1,9 @@
 package edu.ort.tuguia.core.review.domain
 
 interface ReviewRepository {
-    fun saveReview(review: Review)
+    fun createReview(review: Review)
+    fun updateReview(review: Review)
     fun getReviewById(id: String): Review?
-    fun getAllReviews(): List<Review>
+    fun getReviewByBooking(bookingId: String): Review?
     fun deleteReview(review: Review)
 }

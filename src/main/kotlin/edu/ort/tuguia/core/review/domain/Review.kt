@@ -1,10 +1,14 @@
 package edu.ort.tuguia.core.review.domain
 
+import com.fasterxml.jackson.annotation.JsonIgnore
 import com.fasterxml.jackson.annotation.JsonInclude
+import edu.ort.tuguia.core.booking.domain.Booking
 import io.swagger.v3.oas.annotations.media.Schema
 import java.time.LocalDateTime
 import javax.persistence.Entity
 import javax.persistence.Id
+import javax.persistence.JoinColumn
+import javax.persistence.OneToOne
 import javax.persistence.Table
 import javax.validation.constraints.Max
 import javax.validation.constraints.Min
@@ -14,30 +18,28 @@ import javax.validation.constraints.NotBlank
 @Table(name = "reviews")
 class Review(
     id: String = "",
-    commentary: String = "",
+    comment: String = "",
     score: Double = 0.0,
-    activityId: String = "",
-    touristUsername: String = ""
+    booking: Booking? = null
 ) {
     @Schema(readOnly = true)
     @Id
     var id: String
 
     @NotBlank(message = "El comentario es obligatorio")
-    var commentary: String
+    var comment: String
 
     @Min(0, message = "El puntaje debe ser entre 0 y 5")
     @Max(5, message = "El puntaje debe ser entre 0 y 5")
     var score: Double
 
-    @NotBlank(message = "La actividad es obligatoria")
-    var activityId: String
-
-    @NotBlank(message = "El turista es obligatorio")
-    var touristUsername: String
+    @Schema(readOnly = true)
+    @OneToOne
+    @JoinColumn(name = "booking_id", referencedColumnName = "id", nullable = false)
+    private var booking: Booking?
 
     @Schema(readOnly = true)
-    lateinit var createdAt: LocalDateTime
+    var createdAt: LocalDateTime
 
     @Schema(readOnly = true)
     @JsonInclude(JsonInclude.Include.NON_NULL)
@@ -45,9 +47,14 @@ class Review(
 
     init {
         this.id = id
-        this.commentary = commentary
+        this.comment = comment
         this.score = score
-        this.activityId = activityId
-        this.touristUsername = touristUsername
+        this.booking = booking
+        this.createdAt = LocalDateTime.now()
+    }
+
+    @JsonIgnore
+    fun getBookingId(): String {
+        return booking!!.id
     }
 }

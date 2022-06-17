@@ -14,12 +14,12 @@ import javax.validation.Valid
 @RequestMapping("/api/activities")
 class ActivityController(private val activityService: ActivityService) {
     @Operation(summary = "Create an activity")
-    @PostMapping("")
+    @PostMapping
     @ResponseStatus(HttpStatus.CREATED)
     fun createActivity(
         request: HttpServletRequest,
         @RequestBody @Valid @Parameter(description = "Activity") activity: Activity
-    ): Activity? {
+    ): Activity {
         val loggedUser = JwtAuth.getUserFromRequest(request)
         return this.activityService.createActivity(loggedUser.username, activity)
     }
@@ -27,12 +27,14 @@ class ActivityController(private val activityService: ActivityService) {
     @Operation(summary = "Get activity by ID")
     @GetMapping("/{id}")
     @ResponseStatus(HttpStatus.OK)
-    fun getActivityById(@PathVariable @Parameter(description = "ID of activity") id: String): Activity? {
+    fun getActivityById(
+        @PathVariable @Parameter(description = "ID of activity") id: String
+    ): Activity {
         return this.activityService.getActivityById(id)
     }
 
     @Operation(summary = "Get all activities")
-    @GetMapping("")
+    @GetMapping
     @ResponseStatus(HttpStatus.OK)
     fun getAllActivities(): List<Activity> {
         return this.activityService.getAllActivities()
@@ -53,7 +55,7 @@ class ActivityController(private val activityService: ActivityService) {
         request: HttpServletRequest,
         @PathVariable @Parameter(description = "ID of activity") id: String,
         @RequestBody @Valid @Parameter(description = "Activity") activity: Activity
-    ): Activity? {
+    ): Activity {
         val loggedUser = JwtAuth.getUserFromRequest(request)
         activity.id = id
         return this.activityService.updateActivity(loggedUser.username, activity)
@@ -65,7 +67,7 @@ class ActivityController(private val activityService: ActivityService) {
     fun deleteActivityById(
         request: HttpServletRequest,
         @PathVariable @Parameter(description = "ID of activity") id: String
-    ): Activity? {
+    ): Activity {
         val loggedUser = JwtAuth.getUserFromRequest(request)
         return this.activityService.deleteActivityById(loggedUser.username, id)
     }
@@ -73,7 +75,9 @@ class ActivityController(private val activityService: ActivityService) {
     @Operation(summary = "Get close activities by location and filters")
     @PostMapping("/search")
     @ResponseStatus(HttpStatus.OK)
-    fun getCloseActivitiesByLocation(@RequestBody @Valid @Parameter(name = "Search Options") searchOptions: ActivitySearchOptions): List<Activity> {
+    fun getCloseActivitiesByLocation(
+        @RequestBody @Valid @Parameter(name = "Search Options") searchOptions: ActivitySearchOptions
+    ): List<Activity> {
         return this.activityService.getCloseActivities(searchOptions)
     }
 }
