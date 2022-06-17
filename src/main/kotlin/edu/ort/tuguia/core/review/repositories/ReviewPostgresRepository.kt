@@ -1,5 +1,6 @@
 package edu.ort.tuguia.core.review.repositories
 
+import edu.ort.tuguia.core.activity.domain.Activity
 import edu.ort.tuguia.core.booking.domain.Booking
 import edu.ort.tuguia.core.review.domain.Review
 import edu.ort.tuguia.core.review.domain.ReviewRepository
@@ -41,6 +42,16 @@ class ReviewPostgresRepository : ReviewRepository {
         } catch (ex: NoResultException) {
             null
         }
+    }
+
+    override fun getReviewsByActivity(activityId: String): List<Review> {
+        val query = em.criteriaBuilder.createQuery(Review::class.java)
+        val from = query.from(Review::class.java)
+        val booking: Join<Review, Booking> = from.join("booking")
+        val activity: Join<Booking, Activity> = booking.join("activity")
+        val select = query.select(from).where(em.criteriaBuilder.equal(activity.get<Activity>("id"), activityId))
+
+        return em.createQuery(select).resultList
     }
 
     override fun deleteReview(review: Review) {
