@@ -1,15 +1,19 @@
 package edu.ort.tuguia.core.activity.domain
 
+import com.fasterxml.jackson.annotation.JsonIgnore
 import com.fasterxml.jackson.annotation.JsonInclude
 import edu.ort.tuguia.core.category.domain.Category
 import edu.ort.tuguia.core.shared.Reviews
+import edu.ort.tuguia.core.user.domain.User
 import io.swagger.v3.oas.annotations.media.Schema
 import java.time.LocalDateTime
 import javax.persistence.CascadeType
 import javax.persistence.Embedded
 import javax.persistence.Entity
 import javax.persistence.Id
+import javax.persistence.JoinColumn
 import javax.persistence.OneToMany
+import javax.persistence.OneToOne
 import javax.persistence.Table
 import javax.validation.Valid
 import javax.validation.constraints.Min
@@ -26,7 +30,7 @@ class Activity(
     price: Double = 0.0,
     categoryId: String = "",
     photos: MutableList<ActivityPhoto> = mutableListOf(),
-    guideUsername: String = ""
+    guide: User = User()
 ) {
     @Schema(readOnly = true)
     @Id
@@ -62,7 +66,9 @@ class Activity(
     var photos: MutableList<ActivityPhoto>
 
     @Schema(readOnly = true)
-    var guideUsername: String
+    @OneToOne
+    @JoinColumn(name = "guide_username", referencedColumnName = "username", nullable = false)
+    private var guide: User
 
     @Schema(readOnly = true)
     @Embedded
@@ -84,6 +90,19 @@ class Activity(
         this.price = price
         this.categoryId = categoryId
         this.photos = photos
-        this.guideUsername = guideUsername
+        this.guide = guide
+    }
+
+    fun getGuideUsername(): String {
+        return this.guide.username
+    }
+
+    @JsonIgnore
+    fun getGuide(): User {
+        return this.guide
+    }
+
+    fun setGuide(guide: User) {
+        this.guide = guide
     }
 }
