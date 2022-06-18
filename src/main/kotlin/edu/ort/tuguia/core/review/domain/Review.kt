@@ -61,4 +61,8 @@ class Review(
     fun getActivityId(): String {
         return booking?.activity?.id ?: ""
     }
+
+    fun getGuideUsername(): String {
+        return booking?.getGuideUsername() ?: ""
+    }
 }
