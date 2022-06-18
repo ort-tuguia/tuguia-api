@@ -12,6 +12,7 @@ import edu.ort.tuguia.core.user.application.Register
 import edu.ort.tuguia.tools.helpers.http.ApiException
 import org.springframework.http.HttpStatus
 import org.springframework.stereotype.Service
+import org.springframework.context.annotation.Lazy
 import java.util.*
 
 interface UserService {
@@ -34,9 +35,9 @@ interface UserService {
 @Service
 class UserServiceImpl(
     private val userRepository: UserRepository,
-    private val categoryService: CategoryService,
-    private val activityService: ActivityService,
-    private val reviewService: ReviewService
+    @Lazy private val categoryService: CategoryService,
+    @Lazy private val activityService: ActivityService,
+    @Lazy private val reviewService: ReviewService
 ) : UserService {
     override fun saveUser(user: User): User? {
         this.userRepository.saveUser(user)
