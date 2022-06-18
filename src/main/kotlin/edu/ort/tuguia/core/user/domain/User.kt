@@ -3,6 +3,8 @@ package edu.ort.tuguia.core.user.domain
 import com.fasterxml.jackson.annotation.JsonInclude
 import edu.ort.tuguia.core.activity.domain.Activity
 import edu.ort.tuguia.core.category.domain.Category
+import edu.ort.tuguia.core.shared.Reviews
+import io.swagger.v3.oas.annotations.media.Schema
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder
 import javax.persistence.*
 import javax.validation.constraints.Email
@@ -60,6 +62,11 @@ class User(
         joinColumns = [JoinColumn(name = "username")],
         inverseJoinColumns = [JoinColumn(name = "activity_id")])
     var favActivities: MutableList<Activity>
+
+    @Schema(readOnly = true)
+    @Embedded
+    @JsonInclude(JsonInclude.Include.NON_NULL)
+    var reviews: Reviews? = null
 
     init {
         this.username = username
