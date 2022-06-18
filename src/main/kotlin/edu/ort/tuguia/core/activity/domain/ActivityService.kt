@@ -160,9 +160,9 @@ class ActivityServiceImpl(
         var countReviews = 0
         var sumScore = 0.0
 
-        reviews.forEach {
+        reviews.forEach { r ->
             countReviews++
-            sumScore += it.score
+            sumScore += r.score
         }
 
         val avgScore: Double = if (countReviews != 0) {
