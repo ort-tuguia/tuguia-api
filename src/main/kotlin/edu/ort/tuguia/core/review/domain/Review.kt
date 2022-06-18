@@ -20,7 +20,7 @@ class Review(
     id: String = "",
     comment: String = "",
     score: Double = 0.0,
-    booking: Booking? = null
+    booking: Booking = Booking()
 ) {
     @Schema(readOnly = true)
     @Id
@@ -36,7 +36,7 @@ class Review(
     @Schema(readOnly = true)
     @OneToOne
     @JoinColumn(name = "booking_id", referencedColumnName = "id", nullable = false)
-    private var booking: Booking?
+    private var booking: Booking
 
     @Schema(readOnly = true)
     var createdAt: LocalDateTime
@@ -55,14 +55,14 @@ class Review(
 
     @JsonIgnore
     fun getBookingId(): String {
-        return booking?.id ?: ""
+        return booking.id
     }
 
     fun getActivityId(): String {
-        return booking?.activity?.id ?: ""
+        return booking.activity.id
     }
 
     fun getGuideUsername(): String {
-        return booking?.getGuideUsername() ?: ""
+        return booking.getGuideUsername()
     }
 }
