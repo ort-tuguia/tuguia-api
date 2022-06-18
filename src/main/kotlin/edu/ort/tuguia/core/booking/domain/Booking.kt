@@ -45,6 +45,10 @@ class Booking(
         this.createdAt = LocalDateTime.now()
     }
 
+    fun getGuideUsername(): String {
+        return activity?.guideUsername ?: ""
+    }
+
     @JsonIgnore
     fun getActivityId(): String {
         return activity?.id ?: ""
