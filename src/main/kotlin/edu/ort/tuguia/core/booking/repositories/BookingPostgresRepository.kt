@@ -3,7 +3,6 @@ package edu.ort.tuguia.core.booking.repositories
 import edu.ort.tuguia.core.activity.domain.Activity
 import edu.ort.tuguia.core.booking.domain.Booking
 import edu.ort.tuguia.core.booking.domain.BookingRepository
-import edu.ort.tuguia.core.review.domain.Review
 import edu.ort.tuguia.core.user.domain.User
 import org.springframework.context.annotation.Profile
 import org.springframework.stereotype.Repository
@@ -60,8 +59,9 @@ class BookingPostgresRepository : BookingRepository {
     override fun getBookingsByGuide(username: String): List<Booking> {
         val query = em.criteriaBuilder.createQuery(Booking::class.java)
         val from = query.from(Booking::class.java)
-        val activity: Join<Booking, User> = from.join("activity")
-        val select = query.select(from).where(em.criteriaBuilder.equal(activity.get<Activity>("guideUsername"), username))
+        val activity: Join<Activity, User> = from.join("activity")
+        val guide: Join<User, Activity> = activity.join("guide")
+        val select = query.select(from).where(em.criteriaBuilder.equal(guide.get<User>("username"), username))
 
         return em.createQuery(select).resultList
     }
