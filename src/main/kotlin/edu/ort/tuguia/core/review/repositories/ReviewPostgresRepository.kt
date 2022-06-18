@@ -59,7 +59,7 @@ class ReviewPostgresRepository : ReviewRepository {
         val from = query.from(Review::class.java)
         val booking: Join<Review, Booking> = from.join("booking")
         val activity: Join<Booking, Activity> = booking.join("activity")
-        val select = query.select(from).where(em.criteriaBuilder.equal(activity.get<Activity>("guideUsername"), username))
+        val select = query.select(from).where(em.criteriaBuilder.equal(activity.get<Activity>("guide_username"), username))
 
         return em.createQuery(select).resultList
     }
