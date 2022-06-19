@@ -13,6 +13,7 @@ import org.springframework.stereotype.Repository
 class ActivityOrionRepository(val orionClient: OrionClient) : ActivityRepository {
     val entityType = "Activity"
     val typePhoto = "Photo"
+    val typeUser = "User"
 
     override fun createActivity(activity: Activity) {
         val activityJSON = OrionEntity.orionEntityBuilder(
@@ -23,7 +24,7 @@ class ActivityOrionRepository(val orionClient: OrionClient) : ActivityRepository
                 OrionEntity.Attr("price", OrionEntity.TypeDouble, activity.price),
                 OrionEntity.Attr("categoryId", OrionEntity.TypeString, activity.categoryId),
                 OrionEntity.Attr("photos", typePhoto, activity.photos),
-                OrionEntity.Attr("guideUsername", OrionEntity.TypeString, activity.guideUsername),
+                OrionEntity.Attr("guide", typeUser, activity.getGuide()),
                 OrionEntity.Attr("createdAt", OrionEntity.TypeTimestamp, activity.createdAt.toString())
             )
         )
