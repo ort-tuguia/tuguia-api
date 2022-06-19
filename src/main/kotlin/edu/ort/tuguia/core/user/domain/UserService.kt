@@ -5,10 +5,7 @@ import edu.ort.tuguia.core.activity.domain.ActivityService
 import edu.ort.tuguia.core.category.domain.CategoryService
 import edu.ort.tuguia.core.review.domain.ReviewService
 import edu.ort.tuguia.core.shared.Reviews
-import edu.ort.tuguia.core.user.application.ChangePassword
-import edu.ort.tuguia.core.user.application.EditUser
-import edu.ort.tuguia.core.user.application.Login
-import edu.ort.tuguia.core.user.application.Register
+import edu.ort.tuguia.core.user.application.*
 import edu.ort.tuguia.tools.helpers.http.ApiException
 import org.springframework.http.HttpStatus
 import org.springframework.stereotype.Service
@@ -29,6 +26,7 @@ interface UserService {
     fun editUserFavCategories(username: String, categoriesIds: List<String>): User
     fun addUserFavActivity(username: String, activityId: String): List<Activity>
     fun removeUserFavActivity(username: String, activityId: String): List<Activity>
+    fun changeUserPassword(username: String, changeUserPassword: ChangeUserPassword): User
     fun asyncUpdateUserReviews(username: String)
 }
 
@@ -199,6 +197,20 @@ class UserServiceImpl(
         this.saveUser(user)
 
         return user.favActivities
+    }
+
+    override fun changeUserPassword(username: String, changeUserPassword: ChangeUserPassword): User {
+        if (changeUserPassword.newPassword != changeUserPassword.confirmNewPassword) {
+            throw ApiException(HttpStatus.BAD_REQUEST, "Las nuevas contraseñas no coinciden entre sí")
+        }
+
+        val user = this.getUserByUsername(username)
+
+        user.changePassword(changeUserPassword.newPassword)
+
+        this.saveUser(user)
+
+        return user
     }
 
     override fun asyncUpdateUserReviews(username: String) {
