@@ -12,7 +12,7 @@ import javax.servlet.http.HttpServletResponse
 
 private const val CookieKey = "jwt"
 private const val RoleKey = "role"
-private const val SecretKey = "secret"
+private const val SecretEnvKey = "SECRET_JWT_KEY"
 private const val AuthHeader = "Authorization"
 private const val TokenPrefix = "Bearer "
 
@@ -35,7 +35,7 @@ class JwtAuth {
                 .setIssuer(username)
                 .claim(RoleKey, role)
                 .setExpiration(Date(System.currentTimeMillis() + 60 * 24 * 1000)) // 1 day
-                .signWith(SignatureAlgorithm.HS256, SecretKey).compact()
+                .signWith(SignatureAlgorithm.HS256, System.getenv(SecretEnvKey)).compact()
 
             val jwtCookie = Cookie(CookieKey, jwtToken)
             response.addCookie(jwtCookie)
@@ -88,7 +88,7 @@ class JwtAuth {
         private fun getUserFromToken(jwtToken: String): LoggedUser {
             try {
                 val body = Jwts.parser()
-                    .setSigningKey(SecretKey)
+                    .setSigningKey(System.getenv(SecretEnvKey))
                     .parseClaimsJws(jwtToken).body
                 return LoggedUser(body.issuer, body[RoleKey] as String)
             } catch (e: ExpiredJwtException) {
