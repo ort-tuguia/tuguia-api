@@ -33,7 +33,8 @@ class BookingPostgresRepository : BookingRepository {
     override fun getAllBookings(): List<Booking> {
         val query = em.criteriaBuilder.createQuery(Booking::class.java)
         val from = query.from(Booking::class.java)
-        val select = query.select(from).orderBy(em.criteriaBuilder.asc(from.get<Booking>("createdAt")))
+        val select = query.select(from)
+            .orderBy(em.criteriaBuilder.desc(from.get<Booking>("createdAt")))
 
         return em.createQuery(select).resultList
     }
@@ -42,7 +43,9 @@ class BookingPostgresRepository : BookingRepository {
         // TODO: Review, filter in nested class
         val query = em.criteriaBuilder.createQuery(Booking::class.java)
         val from = query.from(Booking::class.java)
-        val select = query.select(from).where(em.criteriaBuilder.equal(from.get<Booking>("activityId"), activityId))
+        val select = query.select(from)
+            .where(em.criteriaBuilder.equal(from.get<Booking>("activityId"), activityId))
+            .orderBy(em.criteriaBuilder.desc(from.get<Booking>("createdAt")))
 
         return em.createQuery(select).resultList
     }
@@ -51,7 +54,9 @@ class BookingPostgresRepository : BookingRepository {
         val query = em.criteriaBuilder.createQuery(Booking::class.java)
         val from = query.from(Booking::class.java)
         val tourist: Join<Booking, User> = from.join("tourist")
-        val select = query.select(from).where(em.criteriaBuilder.equal(tourist.get<User>("username"), username))
+        val select = query.select(from)
+            .where(em.criteriaBuilder.equal(tourist.get<User>("username"), username))
+            .orderBy(em.criteriaBuilder.desc(from.get<Booking>("createdAt")))
 
         return em.createQuery(select).resultList
     }
@@ -61,7 +66,9 @@ class BookingPostgresRepository : BookingRepository {
         val from = query.from(Booking::class.java)
         val activity: Join<Booking, Activity> = from.join("activity")
         val guide: Join<User, Activity> = activity.join("guide")
-        val select = query.select(from).where(em.criteriaBuilder.equal(guide.get<User>("username"), username))
+        val select = query.select(from)
+            .where(em.criteriaBuilder.equal(guide.get<User>("username"), username))
+            .orderBy(em.criteriaBuilder.desc(from.get<Booking>("createdAt")))
 
         return em.createQuery(select).resultList
     }
