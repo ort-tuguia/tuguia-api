@@ -28,19 +28,19 @@ class BookingInMemoryRepository : BookingRepository {
 
     override fun getBookingsByActivity(activityId: String): List<Booking> {
         return ArrayList(bookings.values).filter {
-            it.activity!!.id == activityId
+            it.activity.id == activityId
         }
     }
 
     override fun getBookingsByTourist(username: String): List<Booking> {
         return ArrayList(bookings.values).filter {
-            it.tourist!!.username == username
+            it.tourist.username == username
         }
     }
 
     override fun getBookingsByGuide(username: String): List<Booking> {
         return ArrayList(bookings.values).filter {
-            it.activity!!.guideUsername == username
+            it.activity.getGuideUsername() == username
         }
     }
 
