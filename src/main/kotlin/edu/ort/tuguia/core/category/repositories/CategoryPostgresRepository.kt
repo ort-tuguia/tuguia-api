@@ -27,7 +27,8 @@ class CategoryPostgresRepository : CategoryRepository {
     override fun getCategoryByName(name: String): Category? {
         val query = em.criteriaBuilder.createQuery(Category::class.java)
         val from = query.from(Category::class.java)
-        val select = query.select(from).where(em.criteriaBuilder.equal(em.criteriaBuilder.lower(from.get("name")), name.lowercase()))
+        val select = query.select(from)
+            .where(em.criteriaBuilder.equal(em.criteriaBuilder.lower(from.get("name")), name.lowercase()))
 
         return try {
             em.createQuery(select).singleResult
@@ -39,7 +40,8 @@ class CategoryPostgresRepository : CategoryRepository {
     override fun getAllCategories(): List<Category> {
         val query = em.criteriaBuilder.createQuery(Category::class.java)
         val from = query.from(Category::class.java)
-        val select = query.select(from).orderBy(em.criteriaBuilder.asc(from.get<Category>("createdAt")))
+        val select = query.select(from)
+            .orderBy(em.criteriaBuilder.asc(from.get<Category>("name")))
 
         return em.createQuery(select).resultList
     }
