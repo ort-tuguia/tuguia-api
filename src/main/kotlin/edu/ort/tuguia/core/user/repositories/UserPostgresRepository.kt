@@ -26,7 +26,8 @@ class UserPostgresRepository : UserRepository {
     override fun getAllUsers(): List<User> {
         val query = em.criteriaBuilder.createQuery(User::class.java)
         val from = query.from(User::class.java)
-        val select = query.select(from).orderBy(em.criteriaBuilder.asc(from.get<User>("username")))
+        val select = query.select(from)
+            .orderBy(em.criteriaBuilder.asc(from.get<User>("username")))
 
         return em.createQuery(select).resultList
     }
