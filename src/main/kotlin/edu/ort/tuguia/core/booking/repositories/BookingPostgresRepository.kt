@@ -59,7 +59,7 @@ class BookingPostgresRepository : BookingRepository {
     override fun getBookingsByGuide(username: String): List<Booking> {
         val query = em.criteriaBuilder.createQuery(Booking::class.java)
         val from = query.from(Booking::class.java)
-        val activity: Join<Activity, User> = from.join("activity")
+        val activity: Join<Booking, Activity> = from.join("activity")
         val guide: Join<User, Activity> = activity.join("guide")
         val select = query.select(from).where(em.criteriaBuilder.equal(guide.get<User>("username"), username))
 
