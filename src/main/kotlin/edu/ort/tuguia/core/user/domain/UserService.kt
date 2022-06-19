@@ -26,7 +26,7 @@ interface UserService {
     fun editUserFavCategories(username: String, categoriesIds: List<String>): User
     fun addUserFavActivity(username: String, activityId: String): List<Activity>
     fun removeUserFavActivity(username: String, activityId: String): List<Activity>
-    fun changeUserPassword(username: String, changeUserPassword: ChangeUserPassword): User
+    fun changeUserPassword(username: String, changePassword: ChangeUserPassword): User
     fun asyncUpdateUserReviews(username: String)
 }
 
@@ -199,14 +199,14 @@ class UserServiceImpl(
         return user.favActivities
     }
 
-    override fun changeUserPassword(username: String, changeUserPassword: ChangeUserPassword): User {
-        if (changeUserPassword.newPassword != changeUserPassword.confirmNewPassword) {
+    override fun changeUserPassword(username: String, changePassword: ChangeUserPassword): User {
+        if (changePassword.newPassword != changePassword.confirmNewPassword) {
             throw ApiException(HttpStatus.BAD_REQUEST, "Las nuevas contraseñas no coinciden entre sí")
         }
 
         val user = this.getUserByUsername(username)
 
-        user.changePassword(changeUserPassword.newPassword)
+        user.changePassword(changePassword.newPassword)
 
         this.saveUser(user)
 
