@@ -1,18 +1,22 @@
 package edu.ort.tuguia.core.user.domain
 
+import edu.ort.tuguia.core.user.application.ChangeUserPassword
 import edu.ort.tuguia.tools.auth.JwtAuth
 import edu.ort.tuguia.tools.helpers.http.ApiException
 import io.swagger.v3.oas.annotations.Operation
 import io.swagger.v3.oas.annotations.Parameter
+import io.swagger.v3.oas.annotations.parameters.RequestBody
 import io.swagger.v3.oas.annotations.tags.Tag
 import org.springframework.http.HttpStatus
 import org.springframework.web.bind.annotation.DeleteMapping
 import org.springframework.web.bind.annotation.GetMapping
 import org.springframework.web.bind.annotation.PathVariable
+import org.springframework.web.bind.annotation.PutMapping
 import org.springframework.web.bind.annotation.RequestMapping
 import org.springframework.web.bind.annotation.ResponseStatus
 import org.springframework.web.bind.annotation.RestController
 import javax.servlet.http.HttpServletRequest
+import javax.validation.Valid
 
 @Tag(name = "Users")
 @RestController
@@ -27,6 +31,21 @@ class UsersController(private val userService: UserService) {
             throw ApiException(HttpStatus.UNAUTHORIZED, "Solo los administradores pueden acceder a este recurso")
         }
         return this.userService.getAllUsers()
+    }
+
+    @Operation(summary = "Change user password")
+    @PutMapping("/{username}/password")
+    @ResponseStatus(HttpStatus.OK)
+    fun changeUserPassword(
+        request: HttpServletRequest,
+        @PathVariable @Parameter(description = "Username to change password") username: String,
+        @RequestBody @Valid @Parameter(description = "Change User Password") changePassword: ChangeUserPassword
+    ) : User {
+        val loggedUser = JwtAuth.getUserFromRequest(request)
+        if (!loggedUser.hasRole(UserRole.ADMIN.toString())) {
+            throw ApiException(HttpStatus.UNAUTHORIZED, "Solo los administradores pueden acceder a este recurso")
+        }
+        return this.userService.changeUserPassword(username, changePassword)
     }
 
     @Operation(summary = "Delete user by username")
