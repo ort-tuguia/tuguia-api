@@ -2,10 +2,12 @@ package edu.ort.tuguia.core.activity.repositories
 
 import edu.ort.tuguia.core.activity.domain.Activity
 import edu.ort.tuguia.core.activity.domain.ActivityRepository
+import edu.ort.tuguia.core.user.domain.User
 import org.springframework.context.annotation.Profile
 import org.springframework.stereotype.Repository
 import javax.persistence.EntityManager
 import javax.persistence.PersistenceContext
+import javax.persistence.criteria.Join
 import javax.transaction.Transactional
 
 @Repository
@@ -38,7 +40,8 @@ class ActivityPostgresRepository : ActivityRepository {
     override fun getActivitiesByUsername(username: String): List<Activity> {
         val query = em.criteriaBuilder.createQuery(Activity::class.java)
         val from = query.from(Activity::class.java)
-        val select = query.select(from).where(em.criteriaBuilder.equal(from.get<Activity>("guideUsername"), username))
+        val guide: Join<Activity, User> = from.join("guide")
+        val select = query.select(from).where(em.criteriaBuilder.equal(guide.get<User>("username"), username))
 
         return em.createQuery(select).resultList
     }

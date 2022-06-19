@@ -4,6 +4,7 @@ import edu.ort.tuguia.core.category.domain.CategoryService
 import edu.ort.tuguia.core.review.domain.Review
 import edu.ort.tuguia.core.review.domain.ReviewService
 import edu.ort.tuguia.core.shared.Reviews
+import edu.ort.tuguia.core.user.domain.UserService
 import edu.ort.tuguia.tools.helpers.http.ApiException
 import edu.ort.tuguia.tools.utils.DistanceCalculator
 import org.springframework.http.HttpStatus
@@ -30,12 +31,15 @@ private const val MAX_RESULTS = 50
 class ActivityServiceImpl(
     private val activityRepository: ActivityRepository,
     private val categoryService: CategoryService,
+    private val userService: UserService,
     private val reviewService: ReviewService
 ) : ActivityService {
     override fun createActivity(username: String, activity: Activity): Activity {
+        val user = this.userService.getUserByUsername(username)
+
         activity.id = UUID.randomUUID().toString()
         activity.category = this.categoryService.getCategoryById(activity.categoryId)
-        activity.guideUsername = username
+        activity.setGuide(user)
         activity.createdAt = LocalDateTime.now()
 
         activity.photos.forEach {
@@ -72,7 +76,7 @@ class ActivityServiceImpl(
     override fun updateActivity(username: String, activity: Activity): Activity {
         val queryActivity = this.getActivityById(activity.id)
 
-        if (queryActivity.guideUsername != username) {
+        if (queryActivity.getGuideUsername() != username) {
             throw ApiException(HttpStatus.UNAUTHORIZED, "No es posible modificar la actividad ya que pertenece a otro usuario")
         }
 
@@ -110,7 +114,7 @@ class ActivityServiceImpl(
     override fun deleteActivityById(username: String, id: String): Activity {
         val queryActivity = this.getActivityById(id)
 
-        if (queryActivity.guideUsername != username) {
+        if (queryActivity.getGuideUsername() != username) {
             throw ApiException(HttpStatus.UNAUTHORIZED, "No es posible eliminar la actividad ya que pertenece a otro usuario")
         }
 
@@ -160,9 +164,9 @@ class ActivityServiceImpl(
         var countReviews = 0
         var sumScore = 0.0
 
-        reviews.forEach {
+        reviews.forEach { r ->
             countReviews++
-            sumScore += it.score
+            sumScore += r.score
         }
 
         val avgScore: Double = if (countReviews != 0) {

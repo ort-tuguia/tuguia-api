@@ -14,6 +14,7 @@ interface ReviewService {
     fun getReviewById(id: String): Review
     fun getReviewByBooking(bookingId: String): Review
     fun getReviewsByActivity(activityId: String): List<Review>
+    fun getReviewsByGuide(username: String): List<Review>
     fun updateReview(review: Review): Review
     fun deleteReviewById(id: String): Review
 }
@@ -50,6 +51,10 @@ class ReviewServiceImpl(
 
     override fun getReviewsByActivity(activityId: String): List<Review> {
         return this.reviewRepository.getReviewsByActivity(activityId)
+    }
+
+    override fun getReviewsByGuide(username: String): List<Review> {
+        return this.reviewRepository.getReviewsByGuide(username)
     }
 
     override fun updateReview(review: Review): Review {

@@ -28,7 +28,7 @@ class ActivityInMemoryRepository : ActivityRepository {
 
     override fun getActivitiesByUsername(username: String): List<Activity> {
         return ArrayList(activities.values).filter {
-            it.guideUsername == username
+            it.getGuideUsername() == username
         }
     }
 

@@ -3,6 +3,8 @@ package edu.ort.tuguia.core.user.domain
 import edu.ort.tuguia.core.activity.domain.Activity
 import edu.ort.tuguia.core.activity.domain.ActivityService
 import edu.ort.tuguia.core.category.domain.CategoryService
+import edu.ort.tuguia.core.review.domain.ReviewService
+import edu.ort.tuguia.core.shared.Reviews
 import edu.ort.tuguia.core.user.application.ChangePassword
 import edu.ort.tuguia.core.user.application.EditUser
 import edu.ort.tuguia.core.user.application.Login
@@ -10,6 +12,7 @@ import edu.ort.tuguia.core.user.application.Register
 import edu.ort.tuguia.tools.helpers.http.ApiException
 import org.springframework.http.HttpStatus
 import org.springframework.stereotype.Service
+import org.springframework.context.annotation.Lazy
 import java.util.*
 
 interface UserService {
@@ -26,13 +29,15 @@ interface UserService {
     fun editUserFavCategories(username: String, categoriesIds: List<String>): User
     fun addUserFavActivity(username: String, activityId: String): List<Activity>
     fun removeUserFavActivity(username: String, activityId: String): List<Activity>
+    fun asyncUpdateUserReviews(username: String)
 }
 
 @Service
 class UserServiceImpl(
     private val userRepository: UserRepository,
-    private val categoryService: CategoryService,
-    private val activityService: ActivityService,
+    @Lazy private val categoryService: CategoryService,
+    @Lazy private val activityService: ActivityService,
+    @Lazy private val reviewService: ReviewService
 ) : UserService {
     override fun saveUser(user: User): User? {
         this.userRepository.saveUser(user)
@@ -194,5 +199,31 @@ class UserServiceImpl(
         this.saveUser(user)
 
         return user.favActivities
+    }
+
+    override fun asyncUpdateUserReviews(username: String) {
+        val user = this.getUserByUsername(username)
+
+        if (user.role != UserRole.GUIDE) return
+
+        val reviews = this.reviewService.getReviewsByGuide(user.username)
+
+        var countReviews = 0
+        var sumScore = 0.0
+
+        reviews.forEach { r ->
+            countReviews++
+            sumScore += r.score
+        }
+
+        val avgScore: Double = if (countReviews != 0) {
+            sumScore/countReviews
+        } else {
+            0.0
+        }
+
+        user.reviews = Reviews(avgScore, countReviews)
+
+        this.saveUser(user)
     }
 }

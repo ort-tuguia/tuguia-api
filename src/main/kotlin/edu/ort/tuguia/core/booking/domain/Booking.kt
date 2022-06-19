@@ -18,20 +18,20 @@ import javax.persistence.Table
 @Table(name = "bookings")
 class Booking(
     id: String = "",
-    tourist: User? = null,
-    activity: Activity? = null
-    ) {
+    tourist: User = User(),
+    activity: Activity = Activity()
+) {
     @Schema(readOnly = true)
     @Id
     var id: String
 
     @ManyToOne
     @JoinColumn(name = "username", nullable = false)
-    var tourist: User?
+    var tourist: User
 
     @ManyToOne
     @JoinColumn(name = "activity_id", nullable = false)
-    var activity: Activity?
+    var activity: Activity
 
     @OneToOne(mappedBy = "booking", cascade = [CascadeType.ALL])
     var review: Review? = null
@@ -45,8 +45,17 @@ class Booking(
         this.createdAt = LocalDateTime.now()
     }
 
+    fun getGuide(): User {
+        return activity.getGuide()
+    }
+
+    @JsonIgnore
+    fun getGuideUsername(): String {
+        return activity.getGuideUsername()
+    }
+
     @JsonIgnore
     fun getActivityId(): String {
-        return activity?.id ?: ""
+        return activity.id
     }
 }

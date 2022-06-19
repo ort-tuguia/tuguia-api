@@ -32,11 +32,20 @@ class ReviewInMemoryRepository : ReviewRepository {
 
     override fun getReviewsByActivity(activityId: String): List<Review> {
         val activityReviews = mutableListOf<Review>()
-        reviews.forEach {(_, r) ->
+        reviews.forEach { (_, r) ->
             if (r.getActivityId() == activityId) activityReviews.add(r)
         }
 
         return activityReviews
+    }
+
+    override fun getReviewsByGuide(username: String): List<Review> {
+        val guideReviews = mutableListOf<Review>()
+        reviews.forEach{ (_, r) ->
+            if (r.getGuideUsername() == username) guideReviews.add(r)
+        }
+
+        return guideReviews
     }
 
     override fun deleteReview(review: Review) {
