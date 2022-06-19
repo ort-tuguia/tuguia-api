@@ -1,5 +1,6 @@
 package edu.ort.tuguia.core.activity.domain
 
+import edu.ort.tuguia.core.user.domain.User
 import edu.ort.tuguia.tools.orion.OrionEntity
 import java.time.LocalDateTime
 
@@ -12,7 +13,7 @@ class OrionActivity(
     val price: OrionEntity.Attr<Double>,
     val categoryId: OrionEntity.Attr<String>,
     val photos: OrionEntity.Attr<List<ActivityPhoto>>,
-    val guideUsername: OrionEntity.Attr<String>,
+    val guide: OrionEntity.Attr<User>,
     val createdAt: OrionEntity.Attr<LocalDateTime>,
     val updatedAt: OrionEntity.Attr<LocalDateTime>? = null
 ) {
@@ -27,7 +28,7 @@ class OrionActivity(
         activity.price = price.value
         activity.categoryId = categoryId.value
         activity.photos = photos.value.toMutableList()
-        activity.guideUsername = guideUsername.value
+        activity.setGuide(guide.value)
         activity.createdAt = createdAt.value
         if (updatedAt != null) {
             activity.updatedAt = updatedAt.value
