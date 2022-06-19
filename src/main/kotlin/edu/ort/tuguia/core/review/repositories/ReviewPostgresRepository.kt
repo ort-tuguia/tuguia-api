@@ -4,6 +4,7 @@ import edu.ort.tuguia.core.activity.domain.Activity
 import edu.ort.tuguia.core.booking.domain.Booking
 import edu.ort.tuguia.core.review.domain.Review
 import edu.ort.tuguia.core.review.domain.ReviewRepository
+import edu.ort.tuguia.core.user.domain.User
 import org.springframework.context.annotation.Profile
 import org.springframework.stereotype.Repository
 import javax.persistence.EntityManager
@@ -59,7 +60,8 @@ class ReviewPostgresRepository : ReviewRepository {
         val from = query.from(Review::class.java)
         val booking: Join<Review, Booking> = from.join("booking")
         val activity: Join<Booking, Activity> = booking.join("activity")
-        val select = query.select(from).where(em.criteriaBuilder.equal(activity.get<Activity>("guide_username"), username))
+        val guide: Join<User, Activity> = activity.join("guide")
+        val select = query.select(from).where(em.criteriaBuilder.equal(guide.get<User>("username"), username))
 
         return em.createQuery(select).resultList
     }
