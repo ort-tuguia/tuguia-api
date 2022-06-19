@@ -32,7 +32,9 @@ class ActivityPostgresRepository : ActivityRepository {
     override fun getAllActivities(): List<Activity> {
         val query = em.criteriaBuilder.createQuery(Activity::class.java)
         val from = query.from(Activity::class.java)
-        val select = query.select(from).orderBy(em.criteriaBuilder.asc(from.get<Activity>("createdAt")))
+        val select = query.select(from)
+            .where(em.criteriaBuilder.equal(from.get<Activity>("isDeleted"), false))
+            .orderBy(em.criteriaBuilder.desc(from.get<Activity>("createdAt")))
 
         return em.createQuery(select).resultList
     }
@@ -41,7 +43,11 @@ class ActivityPostgresRepository : ActivityRepository {
         val query = em.criteriaBuilder.createQuery(Activity::class.java)
         val from = query.from(Activity::class.java)
         val guide: Join<Activity, User> = from.join("guide")
-        val select = query.select(from).where(em.criteriaBuilder.equal(guide.get<User>("username"), username))
+        val select = query.select(from)
+            .where(em.criteriaBuilder.and(
+                em.criteriaBuilder.equal(from.get<Activity>("isDeleted"), false),
+                em.criteriaBuilder.equal(guide.get<User>("username"), username)))
+            .orderBy(em.criteriaBuilder.desc(from.get<Activity>("createdAt")))
 
         return em.createQuery(select).resultList
     }
@@ -49,7 +55,11 @@ class ActivityPostgresRepository : ActivityRepository {
     override fun getActivitiesByCategories(categoriesIds: List<String>): List<Activity> {
         val query = em.criteriaBuilder.createQuery(Activity::class.java)
         val from = query.from(Activity::class.java)
-        val select = query.select(from).where(from.get<Activity>("categoryId").`in`(categoriesIds))
+        val select = query.select(from)
+            .where(em.criteriaBuilder.and(
+                em.criteriaBuilder.equal(from.get<Activity>("isDeleted"), false),
+                from.get<Activity>("categoryId").`in`(categoriesIds)))
+            .orderBy(em.criteriaBuilder.desc(from.get<Activity>("createdAt")))
 
         return em.createQuery(select).resultList
     }

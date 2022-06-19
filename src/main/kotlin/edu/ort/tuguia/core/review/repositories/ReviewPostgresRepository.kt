@@ -36,7 +36,9 @@ class ReviewPostgresRepository : ReviewRepository {
         val query = em.criteriaBuilder.createQuery(Review::class.java)
         val from = query.from(Review::class.java)
         val booking: Join<Review, Booking> = from.join("booking")
-        val select = query.select(from).where(em.criteriaBuilder.equal(booking.get<Booking>("id"), bookingId))
+        val select = query.select(from)
+            .where(em.criteriaBuilder.equal(booking.get<Booking>("id"), bookingId))
+            .orderBy(em.criteriaBuilder.desc(from.get<Review>("createdAt")))
 
         return try {
             em.createQuery(select).singleResult
@@ -50,7 +52,9 @@ class ReviewPostgresRepository : ReviewRepository {
         val from = query.from(Review::class.java)
         val booking: Join<Review, Booking> = from.join("booking")
         val activity: Join<Booking, Activity> = booking.join("activity")
-        val select = query.select(from).where(em.criteriaBuilder.equal(activity.get<Activity>("id"), activityId))
+        val select = query.select(from)
+            .where(em.criteriaBuilder.equal(activity.get<Activity>("id"), activityId))
+            .orderBy(em.criteriaBuilder.desc(from.get<Review>("createdAt")))
 
         return em.createQuery(select).resultList
     }
@@ -61,7 +65,9 @@ class ReviewPostgresRepository : ReviewRepository {
         val booking: Join<Review, Booking> = from.join("booking")
         val activity: Join<Booking, Activity> = booking.join("activity")
         val guide: Join<User, Activity> = activity.join("guide")
-        val select = query.select(from).where(em.criteriaBuilder.equal(guide.get<User>("username"), username))
+        val select = query.select(from)
+            .where(em.criteriaBuilder.equal(guide.get<User>("username"), username))
+            .orderBy(em.criteriaBuilder.desc(from.get<Review>("createdAt")))
 
         return em.createQuery(select).resultList
     }

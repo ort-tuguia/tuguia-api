@@ -2,6 +2,7 @@ package edu.ort.tuguia.core.activity.domain
 
 import com.fasterxml.jackson.annotation.JsonIgnore
 import com.fasterxml.jackson.annotation.JsonInclude
+import com.fasterxml.jackson.annotation.JsonProperty
 import edu.ort.tuguia.core.category.domain.Category
 import edu.ort.tuguia.core.shared.Reviews
 import edu.ort.tuguia.core.user.domain.User
@@ -69,11 +70,20 @@ class Activity(
     var reviews: Reviews? = null
 
     @Schema(readOnly = true)
+    var isDeleted: Boolean
+        @JsonProperty("isDeleted")
+        get
+
+    @Schema(readOnly = true)
     lateinit var createdAt: LocalDateTime
 
     @Schema(readOnly = true)
     @JsonInclude(JsonInclude.Include.NON_NULL)
     var updatedAt: LocalDateTime? = null
+
+    @Schema(readOnly = true)
+    @JsonInclude(JsonInclude.Include.NON_NULL)
+    var deletedAt: LocalDateTime? = null
 
     init {
         this.id = id
@@ -85,6 +95,7 @@ class Activity(
         this.categoryId = categoryId
         this.photos = photos
         this.guide = guide
+        this.isDeleted = false
     }
 
     fun getGuideUsername(): String {

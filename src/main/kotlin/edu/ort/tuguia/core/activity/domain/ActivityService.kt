@@ -118,7 +118,14 @@ class ActivityServiceImpl(
             throw ApiException(HttpStatus.UNAUTHORIZED, "No es posible eliminar la actividad ya que pertenece a otro usuario")
         }
 
-        this.activityRepository.deleteActivity(queryActivity)
+        if (queryActivity.isDeleted) {
+            throw ApiException(HttpStatus.BAD_REQUEST, "La actividad ya se encuentra eliminada")
+        }
+
+        queryActivity.isDeleted = true
+        queryActivity.deletedAt = LocalDateTime.now()
+
+        this.activityRepository.updateActivity(queryActivity)
 
         return queryActivity
     }
