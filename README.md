@@ -50,9 +50,12 @@ DATABASE_HOST=localhost;DATABASE_NAME=tuguia;DATABASE_PASSWORD=password;DATABASE
 -   [Production (On Heroku)](https://ort-tuguia-api.herokuapp.com/swagger-ui/index.html)
 -   [Local](http://localhost:8080/swagger-ui/index.html)
 
+### Manuals
+
+-   [Developer Manual](https://docs.google.com/document/d/11avoCSS9cVkUSJQ-y1uf5iqZlVy-1enZ)
+
 ## Developed By
 
 -   [@AgusVenturelli](https://github.com/AgusVenturelli)
 -   [@alejandrogrosso](https://github.com/alejandrogrosso)
 -   [@daichanmiyashiro](https://github.com/daichanmiyashiro)
-
